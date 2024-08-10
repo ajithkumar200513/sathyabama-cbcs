@@ -1,0 +1,68 @@
+import React, { useEffect, useState } from 'react'
+import {useStaffAuthContext} from '../Hooks/useStaffAuthContext'
+const Attendence = () => {
+ const {staff} = useStaffAuthContext();
+const [Data,setData] = useState([])
+const [check,setCheck] = useState(false)
+function formatDate(date) {
+    const day = String(date.getDate()).padStart(2, '0');
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const year = date.getFullYear();
+  
+    return `${day}/${month}/${year}`;
+  }
+  const today = new Date();
+  const formattedDate = formatDate(today);
+  console.log(check)
+
+useEffect(()=>
+{
+  const fetchdata = async() =>
+  {
+    const responce = await fetch('http://localhost:4000/cbcs/staf/Attendence/'+staff.course_id,
+    {headers:{'Authorization':`Bearer ${staff.token}`}})
+    const json = await responce.json()
+    console.log(json)
+    if(responce.ok)
+    {
+      setData(json)
+    }
+  }
+  if(staff)
+  {
+    fetchdata()
+  }
+},[])
+  return (
+    <div>
+      {Data &&
+       <table id='Hod'>
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>RegNo</th>
+                <th>Date</th>
+                <th>Attendence</th>
+            </tr>
+        </thead>
+        <tbody>
+            {Data.map((value)=>(
+           <tr>
+            <td>{value.Name}</td>
+            <td>{value.RegNo}</td>
+            <td>{formattedDate}</td>
+            <td>
+            <input
+            type='checkbox'
+            >
+            </input></td>
+           </tr>
+              ))
+            }
+        </tbody>
+      </table>}
+    </div>
+  )
+}
+
+export default Attendence
