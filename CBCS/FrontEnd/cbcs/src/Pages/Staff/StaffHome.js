@@ -29,6 +29,18 @@ const StaffHome = () => {
     }
   }, [staff]);
 
+  useEffect(() => {
+    const handleOrientationChange = () => {
+      if (window.matchMedia("(orientation: portrait)").matches) {
+        alert("For the best experience, please switch to landscape mode.");
+      }
+    };
+
+    handleOrientationChange(); // Check on mount
+    window.addEventListener('resize', handleOrientationChange);
+    return () => window.removeEventListener('resize', handleOrientationChange);
+  }, []);
+
   const handleLogout = async () => {
     logout();
   };

@@ -2,7 +2,7 @@ import { Link } from 'react-router-dom';
 import React from 'react';
 import '../css/UserType12.css';
 import videoSource from '../css/video.mp4'; // Correct import of the video
-import back from '../css/back.jpg'; // Correct import of the image
+import back from '../css/back.jpg'; // Correct import of the image (if needed)
 import Chatbot from './Chatbot'; // Import the Chatbot component
 
 const UserType = () => {
@@ -16,6 +16,7 @@ const UserType = () => {
         <img src={back} alt="Banner" />
       </div>
       <div className='menu-container'>
+        <h1 className='heading'>SELECT ROLE</h1>
         <nav>
           <Link to='/COE' className='btn btn-primary btn-block'>ADMIN</Link>
           <Link to='/hod' className='btn btn-primary btn-block'>HOD</Link>

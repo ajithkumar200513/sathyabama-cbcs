@@ -11,17 +11,19 @@
   overflow: hidden;
 }
 
+/* Video styles */
 #background-video {
   position: absolute;
   top: 50%;
   left: 50%;
   width: 100%;
-  height: 139%;
+  height: 100%;
   object-fit: cover;
   z-index: -1;
   transform: translate(-50%, -50%);
 }
 
+/* Banner styles */
 .banner {
   position: absolute;
   top: 0;
@@ -42,14 +44,17 @@
   justify-content: center;
   background: rgba(255, 255, 255, 0.3);
   width: 50%;
- /* Slightly opaque background */
   padding: 10px;
   border-radius: 10px;
   margin: 70px auto; /* Centered and reduced margin */
   max-width: 500px; /* Limit max-width for larger screens */
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Added shadow for style */
 }
-
+.heading {
+  font-size: x-large;
+  color: #fff;
+  font-weight: bold;
+}
 .menu-container nav {
   display: flex;
   flex-direction: column;
@@ -97,7 +102,7 @@
   justify-content: center;
   flex: 1;
   padding: 20px;
-  color:azure;
+  color: #fff;
   text-align: center;
   max-width: 90%;
   margin: 0 auto;
@@ -121,7 +126,7 @@
 /* Footer styles */
 .footer {
   position: absolute;
-  bottom: 20px;
+  bottom: 0;
   width: 100%;
   display: flex;
   justify-content: center;
@@ -223,7 +228,4 @@
     height: 25px;
     font-size: 18px;
   }
-  /* Ensure the background image covers the entire view */
-
-
 }
