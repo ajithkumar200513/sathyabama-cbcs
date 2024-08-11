@@ -4,7 +4,8 @@ import { useCourseContext } from '../Hooks/useCourseContext';
 import { useAuthContext } from '../Hooks/useAuthContext';
 import StudentInfo from './StudentInfo';
 import backgroundImage from '../css/logo.png';
-import {useLogout} from '../Hooks/useLogout'
+import { useLogout } from '../Hooks/useLogout';
+
 const StudentTable = ({ course }) => {
     const { user } = useAuthContext();
     const { dispatch } = useCourseContext();
@@ -12,11 +13,19 @@ const StudentTable = ({ course }) => {
     const [data, setData] = useState([]);
     const [courseInfo, setCourseInfo] = useState('');
     const [buttonHovered, setButtonHovered] = useState({});
-    const {logout} = useLogout()
+    const { logout } = useLogout();
+    const [searchTerm, setSearchTerm] = useState('');
 
     useEffect(() => {
-        setData(course);
+        // Ensure course is an array before setting it
+        if (Array.isArray(course)) {
+            setData(course);
+        }
     }, [course]);
+
+    const filteredData = data.filter((user) =>
+        user.CourseName.toLowerCase().includes(searchTerm.toLowerCase())
+    );
 
     const CourseReg1 = user.CourseInfo;
 
@@ -64,7 +73,7 @@ const StudentTable = ({ course }) => {
         }
 
         setData(course);
-        setTimeout(logout,2000)
+        setTimeout(logout, 2000);
     };
 
     const handleMouseEnter = (buttonName) => {
@@ -154,6 +163,32 @@ const StudentTable = ({ course }) => {
         infoText: {
             fontSize: '18px',
         },
+        searchContainer: {
+            marginBottom: '20px',
+            display: 'flex',
+            alignItems: 'center',
+            gap: '10px',
+        },
+        searchInput: {
+            padding: '10px',
+            fontSize: '16px',
+            borderRadius: '4px',
+            border: '1px solid #ddd',
+            flex: '1',
+        },
+        searchButton: {
+            padding: '10px 15px',
+            backgroundColor: '#9e1c3f',
+            border: 'none',
+            borderRadius: '4px',
+            color: '#fff',
+            cursor: 'pointer',
+            transition: 'background-color 0.3s',
+            fontSize: '16px',
+        },
+        searchButtonHover: {
+            backgroundColor: '#c2185b',
+        },
     };
 
     return (
@@ -164,7 +199,27 @@ const StudentTable = ({ course }) => {
                 </div>
             </div>
 
-            {!courseInfo && !CourseReg1 &&
+            <div style={styles.searchContainer}>
+                <input
+                    type="text"
+                    style={styles.searchInput}
+                    placeholder="Search Course"
+                    value={searchTerm}
+                    onChange={(e) => setSearchTerm(e.target.value)}
+                />
+                <button
+                    style={{
+                        ...styles.searchButton,
+                        ...(buttonHovered.search ? styles.searchButtonHover : {}),
+                    }}
+                    onMouseEnter={() => handleMouseEnter('search')}
+                    onMouseLeave={() => handleMouseLeave('search')}
+                >
+                    Search
+                </button>
+            </div>
+
+            {!courseInfo && !CourseReg1 && (
                 <table style={styles.table}>
                     <thead>
                         <tr>
@@ -176,37 +231,40 @@ const StudentTable = ({ course }) => {
                         </tr>
                     </thead>
                     <tbody>
-                    {data.length > 0 ? (
-    data.map((user) => (
-        <tr key={user._id}>
-            <td style={styles.td}>{user.CourseName}</td>
-            <td style={styles.td}>{user.Coordinator.Name}</td>
-            <td style={styles.td}>{user.ProvidedBy}</td>
-            <td style={styles.td}>{user.Seats}</td>
-            <td style={styles.td}>
-                <button
-                    style={{
-                        ...styles.button,
-                        ...styles.regButton,
-                        ...(buttonHovered[`reg-${user._id}`] ? styles.regButtonHover : {})
-                    }}
-                    onMouseEnter={() => handleMouseEnter(`reg-${user._id}`)}
-                    onMouseLeave={() => handleMouseLeave(`reg-${user._id}`)}
-                    onClick={(e) => handleClick(e, user)}
-                    disabled={user.Seats <= 0}
-                >
-                    Register
-                </button>
-            </td>
-        </tr>
-    ))
-) : (
-    <p>No data available</p>
-)}
+                        {filteredData.length > 0 ? (
+                            filteredData.map((user) => (
+                                <tr key={user._id}>
+                                    <td style={styles.td}>{user.CourseName}</td>
+                                    <td style={styles.td}>{user.Name}</td>
+                                    <td style={styles.td}>{user.ProvidedBy}</td>
+                                    <td style={styles.td}>{user.Seats}</td>
+                                    <td style={styles.td}>
+                                        <button
+                                            style={{
+                                                ...styles.button,
+                                                ...styles.regButton,
+                                                ...(buttonHovered[`reg-${user._id}`] ? styles.regButtonHover : {}),
+                                            }}
+                                            onMouseEnter={() => handleMouseEnter(`reg-${user._id}`)}
+                                            onMouseLeave={() => handleMouseLeave(`reg-${user._id}`)}
+                                            onClick={(e) => handleClick(e, user)}
+                                            disabled={user.Seats <= 0}
+                                        >
+                                            Register
+                                        </button>
+                                    </td>
+                                </tr>
+                            ))
+                        ) : (
+                            <tr>
+                                <td colSpan="5" style={styles.td}>No data available</td>
+                            </tr>
+                        )}
                     </tbody>
                 </table>
-            }
-            {courseInfo &&
+            )}
+
+            {courseInfo && (
                 <div style={styles.infoContainer}>
                     <h1 style={styles.infoHeader}>About</h1>
                     <h2 style={styles.infoText}>
@@ -220,7 +278,7 @@ const StudentTable = ({ course }) => {
                             style={{
                                 ...styles.button,
                                 ...styles.regButton,
-                                ...(buttonHovered.register ? styles.regButtonHover : {})
+                                ...(buttonHovered.register ? styles.regButtonHover : {}),
                             }}
                             onMouseEnter={() => handleMouseEnter('register')}
                             onMouseLeave={() => handleMouseLeave('register')}
@@ -233,7 +291,7 @@ const StudentTable = ({ course }) => {
                         style={{
                             ...styles.button,
                             ...styles.closeButton,
-                            ...(buttonHovered.close ? styles.closeButtonHover : {})
+                            ...(buttonHovered.close ? styles.closeButtonHover : {}),
                         }}
                         onMouseEnter={() => handleMouseEnter('close')}
                         onMouseLeave={() => handleMouseLeave('close')}
@@ -242,10 +300,11 @@ const StudentTable = ({ course }) => {
                         Close
                     </button>
                 </div>
-            }
-            {CourseReg1 &&
+            )}
+
+            {CourseReg1 && (
                 <div><StudentInfo key={user.user_id} user={user} /></div>
-            }
+            )}
         </div>
     );
 };

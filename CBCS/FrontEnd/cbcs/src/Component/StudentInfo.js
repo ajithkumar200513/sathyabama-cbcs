@@ -5,15 +5,17 @@ const StudentInfo = ({ user }) => {
 
     useEffect(() => {
         async function fetchData() {
-            const response = await fetch(`http://localhost:4000/cbcs/course/${user.user_id}`, {
-                headers: { 'Authorization': `Bearer ${user.token}` }
-            });
-            const json = await response.json();
-            if (!response.ok) {
-                console.log("Error in response");
-            }
-            if (response.ok) {
+            try {
+                const response = await fetch(`http://localhost:4000/cbcs/course/${user.user_id}`, {
+                    headers: { 'Authorization': `Bearer ${user.token}` }
+                });
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                const json = await response.json();
                 setData(json);
+            } catch (error) {
+                console.error('Error fetching data:', error);
             }
         }
         fetchData();
@@ -24,7 +26,6 @@ const StudentInfo = ({ user }) => {
             fontFamily: 'Arial, sans-serif',
             padding: '20px',
             backgroundColor: '#FFFFFF80',
-
             minHeight: '100vh',
             margin: 0,
             display: 'flex',
@@ -42,12 +43,6 @@ const StudentInfo = ({ user }) => {
         },
         studentDetails: {
             marginBottom: '20px',
-        },
-        profilePic: {
-            width: '100px',
-            height: '100px',
-            borderRadius: '50%',
-            marginBottom: '15px',
         },
         table: {
             width: '100%',
@@ -75,46 +70,48 @@ const StudentInfo = ({ user }) => {
                     {/* Add Navbar content here */}
                 </nav>
                 <div style={styles.studentContainer}>
-                    {data.map((value, index) => (
+                    {data.length > 0 ? data.map((value, index) => (
                         <div style={styles.studentDetails} key={index}>
                             <table style={styles.table}>
                                 <tbody>
                                     <tr>
                                         <td style={styles.tableCell}>Name:</td>
-                                        <td style={styles.tableCell}>{value.Name.toUpperCase()}</td>
+                                        <td style={styles.tableCell}>{value.Name ? value.Name.toUpperCase() : 'N/A'}</td>
                                     </tr>
                                     <tr>
                                         <td style={styles.tableCell}>Register Number:</td>
-                                        <td style={styles.tableCell}>{value.RegNo}</td>
+                                        <td style={styles.tableCell}>{value.RegNo || 'N/A'}</td>
                                     </tr>
                                     <tr>
                                         <td style={styles.tableCell}>Roll Number:</td>
-                                        <td style={styles.tableCell}>{value.RollNo}</td>
+                                        <td style={styles.tableCell}>{value.RollNo || 'N/A'}</td>
                                     </tr>
                                     <tr>
                                         <td style={styles.tableCell}>Gender:</td>
-                                        <td style={styles.tableCell}>{value.Gender}</td>
+                                        <td style={styles.tableCell}>{value.Gender || 'N/A'}</td>
                                     </tr>
                                     <tr>
                                         <td style={styles.tableCell}>Date of Birth:</td>
-                                        <td style={styles.tableCell}>{value.DOB}</td>
+                                        <td style={styles.tableCell}>{value.DOB || 'N/A'}</td>
                                     </tr>
                                     <tr>
                                         <td style={styles.tableCell}>Department:</td>
-                                        <td style={styles.tableCell}>{value.Dept}</td>
+                                        <td style={styles.tableCell}>{value.Dept || 'N/A'}</td>
                                     </tr>
                                     <tr>
                                         <td style={styles.tableCell}>Course:</td>
-                                        <td style={styles.tableCell}>{value.CourseInfo.CourseName}</td>
+                                        <td style={styles.tableCell}>{value.CourseInfo?.CourseName || 'N/A'}</td>
                                     </tr>
                                     <tr>
                                         <td style={styles.tableCell}>Marks:</td>
-                                        <td style={styles.tableCell}><a href="#">{value.Marks.CAE1}</a></td>
+                                        <td style={styles.tableCell}>
+                                            {value.Marks ? value.Marks.CAE1 || 'N/A' : 'N/A'}
+                                        </td>
                                     </tr>
                                 </tbody>
                             </table>
                         </div>
-                    ))}
+                    )) : <p>No student data available.</p>}
                 </div>
             </div>
             <nav style={styles.bottomNavbar}>
