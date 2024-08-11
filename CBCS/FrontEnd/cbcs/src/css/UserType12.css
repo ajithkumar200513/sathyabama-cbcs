@@ -151,7 +151,8 @@
   line-height: 40px; /* Center the icon vertically */
   outline: none; /* Remove the default focus outline */
   border: none; /* Remove any default border */
-  box-shadow: none; /* Remove any default shadow */
+  box-shadow: none; 
+  text-decoration: none;/* Remove any default shadow */
 }
 
 .footer-link:hover {
