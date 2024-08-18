@@ -8,6 +8,9 @@ const HodTable = () => {
   const [courseInfo, setCourseInfo] = useState('');
   const [searchQuery, setSearchQuery] = useState('');
   const [filteredStudentData, setFilteredStudentData] = useState([]);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [currentStudentPage, setCurrentStudentPage] = useState(1);
+  const itemsPerPage = 10; // Number of items per page
   const { HOD } = useHodAuthContext();
   const { dispatch, course } = useCourseContext();
 
@@ -17,15 +20,12 @@ const HodTable = () => {
 
   useEffect(() => {
     const handleSearch = () => {
-      if (!Array.isArray(course)) return; // Ensure course is an array
+      if (!Array.isArray(course)) return;
 
       const query = searchQuery.toLowerCase();
       const filteredData = course.filter((item) => {
-        // Check if item has the properties before accessing them
         const courseName = item.CourseName ? item.CourseName.toLowerCase() : '';
-        const coordinatorName = item.Coordinator && item.Coordinator.Name
-          ? item.Coordinator.Name.toLowerCase()
-          : '';
+        const coordinatorName = item.Coordinator?.Name?.toLowerCase() || '';
         const providedBy = item.ProvidedBy ? item.ProvidedBy.toLowerCase() : '';
         const seats = item.Seats ? item.Seats.toString().toLowerCase() : '';
 
@@ -44,12 +44,11 @@ const HodTable = () => {
 
   useEffect(() => {
     const handleStudentSearch = () => {
-      if (!Array.isArray(studentData)) return; // Ensure studentData is an array
+      if (!Array.isArray(studentData)) return;
 
       const query = searchQuery.toLowerCase();
       const filteredStudents = studentData.flatMap((user) =>
         user.RegStudents.filter((student) => {
-          // Check if student has the properties before accessing them
           const name = student.Name ? student.Name.toLowerCase() : '';
           const regNo = student.RegNo ? student.RegNo.toLowerCase() : '';
           const email = student.Email ? student.Email.toLowerCase() : '';
@@ -77,7 +76,7 @@ const HodTable = () => {
     const json = await response.json();
     if (response.ok) {
       setStudentData(json);
-      setFilteredStudentData(json.flatMap((user) => user.RegStudents)); // Reset filtered data
+      setFilteredStudentData(json.flatMap((user) => user.RegStudents));
     }
     setCourseInfo(user);
   };
@@ -94,7 +93,6 @@ const HodTable = () => {
     }
   };
 
-  // Handle device orientation change
   useEffect(() => {
     const handleOrientationChange = () => {
       if (window.innerWidth < 768 && window.innerHeight > window.innerWidth) {
@@ -104,14 +102,43 @@ const HodTable = () => {
       }
     };
 
-    handleOrientationChange(); // Check orientation on mount
+    handleOrientationChange();
 
-    window.addEventListener('resize', handleOrientationChange); // Listen for orientation changes
+    window.addEventListener('resize', handleOrientationChange);
 
     return () => {
-      window.removeEventListener('resize', handleOrientationChange); // Cleanup on unmount
+      window.removeEventListener('resize', handleOrientationChange);
     };
   }, []);
+
+  const totalPages = Math.ceil(data.length / itemsPerPage);
+  const totalStudentPages = Math.ceil(filteredStudentData.length / itemsPerPage);
+
+  const handleNextPage = () => {
+    setCurrentPage((prevPage) => Math.min(prevPage + 1, totalPages));
+  };
+
+  const handlePreviousPage = () => {
+    setCurrentPage((prevPage) => Math.max(prevPage - 1, 1));
+  };
+
+  const handleStudentNextPage = () => {
+    setCurrentStudentPage((prevPage) => Math.min(prevPage + 1, totalStudentPages));
+  };
+
+  const handleStudentPreviousPage = () => {
+    setCurrentStudentPage((prevPage) => Math.max(prevPage - 1, 1));
+  };
+
+  const currentData = data.slice(
+    (currentPage - 1) * itemsPerPage,
+    currentPage * itemsPerPage
+  );
+
+  const currentStudentData = filteredStudentData.slice(
+    (currentStudentPage - 1) * itemsPerPage,
+    currentStudentPage * itemsPerPage
+  );
 
   const styles = {
     body: {
@@ -178,6 +205,39 @@ const HodTable = () => {
       display: 'flex',
       justifyContent: 'center',
     },
+    paginationContainer: {
+      display: 'flex',
+      justifyContent: 'center',
+      marginTop: '20px',
+    },
+    paginationButton: {
+      padding: '8px 16px',
+      margin: '0 5px',
+      cursor: 'pointer',
+      borderRadius: '4px',
+      backgroundColor: '#9e1c3f', // Same color theme as logout button
+      color: '#fff',
+      border: 'none',
+      fontSize: '14px',
+    },
+    paginationButtonDisabled: {
+      backgroundColor: '#ccc',
+      cursor: 'not-allowed',
+    },
+    '@media (max-width: 768px)': {
+      searchInput: {
+        width: '95%',
+      },
+      table: {
+        fontSize: '12px', // Smaller font size for mobile
+      },
+      th: {
+        padding: '8px', // Smaller padding for mobile
+      },
+      td: {
+        padding: '8px', // Smaller padding for mobile
+      },
+    },
   };
 
   return (
@@ -191,33 +251,32 @@ const HodTable = () => {
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
           />
-          <button style={styles.button} onClick={() => setSearchQuery(searchQuery)}>Search</button>
         </div>
         {!courseInfo && (
-          <table style={styles.table}>
-            <thead>
-              <tr>
-                <th style={styles.th}>Course</th>
-                <th style={styles.th}>Faculty</th>
-                <th style={styles.th}>DEPT</th>
-                <th style={styles.th}>Available Seats</th>
-                <th style={styles.th}>Options</th>
-              </tr>
-            </thead>
-            <tbody>
-              {data.map((user) => (
-                <tr key={user._id}>
-                  <td style={styles.td}>{user.CourseName}</td>
-                  <td style={styles.td}>{user.Coordinator?.Name || 'N/A'}</td>
-                  <td style={styles.td}>{user.ProvidedBy}</td>
-                  <td style={styles.td}>{user.Seats}</td>
-                  <td style={styles.td}>
-                    <div style={styles.buttonContainer}>
+          <>
+            <table style={styles.table}>
+              <thead>
+                <tr>
+                  <th style={styles.th}>Course</th>
+                  <th style={styles.th}>Faculty</th>
+                  <th style={styles.th}>DEPT</th>
+                  <th style={styles.th}>Available Seats</th>
+                  <th style={styles.th}>Options</th>
+                </tr>
+              </thead>
+              <tbody>
+                {currentData.map((user) => (
+                  <tr key={user._id}>
+                    <td style={styles.td}>{user.CourseName}</td>
+                    <td style={styles.td}>{user.Coordinator?.Name}</td>
+                    <td style={styles.td}>{user.ProvidedBy}</td>
+                    <td style={styles.td}>{user.Seats}</td>
+                    <td style={styles.td}>
                       <button
                         style={styles.button}
                         onClick={(e) => handleClick(e, user)}
                       >
-                        Registered Students
+                        View Students
                       </button>
                       <button
                         style={styles.button}
@@ -225,48 +284,82 @@ const HodTable = () => {
                       >
                         Delete
                       </button>
-                    </div>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        )}
-        {studentData.length > 0 && courseInfo && (
-          <>
-            <h2>Registered Students for {courseInfo.CourseName}</h2>
-            <div style={styles.searchContainer}>
-              <input
-                style={styles.searchInput}
-                type="text"
-                placeholder="Search students by name, regno, email, or dept"
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-              />
-              <button style={styles.button} onClick={() => setSearchQuery(searchQuery)}>Search</button>
-            </div>
-            <table style={styles.table}>
-              <thead>
-                <tr>
-                  <th style={styles.th}>Name</th>
-                  <th style={styles.th}>RegNo</th>
-                  <th style={styles.th}>Email</th>
-                  <th style={styles.th}>DEPT</th>
-                  <th style={styles.th}>Course</th>
-                </tr>
-              </thead>
-              <tbody>
-                {filteredStudentData.map((student) => (
-                  <tr key={student.RegNo}>
-                    <td style={styles.td}>{student.Name}</td>
-                    <td style={styles.td}>{student.RegNo}</td>
-                    <td style={styles.td}>{student.Email}</td>
-                    <td style={styles.td}>{student.Dept}</td>
-                    <td style={styles.td}>{courseInfo.CourseName}</td>
+                    </td>
                   </tr>
                 ))}
               </tbody>
             </table>
+            <div style={styles.paginationContainer}>
+              <button
+                style={{
+                  ...styles.paginationButton,
+                  ...(currentPage === 1 ? styles.paginationButtonDisabled : {}),
+                }}
+                onClick={handlePreviousPage}
+                disabled={currentPage === 1}
+              >
+                Previous
+              </button>
+              <span>Page {currentPage} of {totalPages}</span>
+              <button
+                style={{
+                  ...styles.paginationButton,
+                  ...(currentPage === totalPages ? styles.paginationButtonDisabled : {}),
+                }}
+                onClick={handleNextPage}
+                disabled={currentPage === totalPages}
+              >
+                Next
+              </button>
+            </div>
+          </>
+        )}
+        {courseInfo && (
+          <>
+            <h2>Student Details for Course: {courseInfo.CourseName}</h2>
+            <table style={styles.table}>
+              <thead>
+                <tr>
+                  <th style={styles.th}>Name</th>
+                  <th style={styles.th}>Reg No</th>
+                  <th style={styles.th}>Email</th>
+                  <th style={styles.th}>Dept</th>
+                </tr>
+              </thead>
+              <tbody>
+                {currentStudentData.map((student) => (
+                  <tr key={student._id}>
+                    <td style={styles.td}>{student.Name}</td>
+                    <td style={styles.td}>{student.RegNo}</td>
+                    <td style={styles.td}>{student.Email}</td>
+                    <td style={styles.td}>{student.Dept}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+            <div style={styles.paginationContainer}>
+              <button
+                style={{
+                  ...styles.paginationButton,
+                  ...(currentStudentPage === 1 ? styles.paginationButtonDisabled : {}),
+                }}
+                onClick={handleStudentPreviousPage}
+                disabled={currentStudentPage === 1}
+              >
+                Previous
+              </button>
+              <span>Page {currentStudentPage} of {totalStudentPages}</span>
+              <button
+                style={{
+                  ...styles.paginationButton,
+                  ...(currentStudentPage === totalStudentPages ? styles.paginationButtonDisabled : {}),
+                }}
+                onClick={handleStudentNextPage}
+                disabled={currentStudentPage === totalStudentPages}
+              >
+                Next
+              </button>
+            </div>
           </>
         )}
       </main>

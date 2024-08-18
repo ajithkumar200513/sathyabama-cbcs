@@ -6,6 +6,7 @@ import backgroundImage from '../Login/logo.png'; // Ensure this path is correct
 const StudentLogin = () => {
   const [RegNo, setRegNo] = useState('');
   const [password, setPassword] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
   const { login, error, isLoading } = useLogin('');
 
   const handleSubmit = async (e) => {
@@ -89,6 +90,12 @@ const StudentLogin = () => {
       borderRadius: '4px',
       border: '1px solid #ccc',
       fontSize: '16px',
+      marginBottom: '10px',
+    },
+    checkboxContainer: {
+      display: 'flex',
+      justifyContent: 'space-between',
+      alignItems: 'center',
       marginBottom: '20px',
     },
     button: {
@@ -134,7 +141,7 @@ const StudentLogin = () => {
         <div style={styles.rightSide}>
           <div style={styles.formGroup}>
             <p style={styles.text}>
-              <b>Enter your Details.</b>
+              <b>Enter your Details</b>
             </p>
             <form id="form" onSubmit={handleSubmit}>
               <div>
@@ -153,13 +160,23 @@ const StudentLogin = () => {
                 <label htmlFor="Password" style={styles.label}>Password</label>
                 <input
                   id="Password"
-                  type="password"
+                  type={showPassword ? 'text' : 'password'}
                   placeholder="Password"
                   style={styles.input}
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   required
                 />
+              </div>
+              <div style={styles.checkboxContainer}>
+                <label style={styles.label}>
+                  <input
+                    type="checkbox"
+                    checked={showPassword}
+                    onChange={() => setShowPassword(!showPassword)}
+                  />
+                  Show Password
+                </label>
               </div>
               <button
                 type="submit"

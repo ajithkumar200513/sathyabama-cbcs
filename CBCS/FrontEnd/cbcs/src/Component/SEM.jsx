@@ -9,6 +9,10 @@ const SEM = () => {
   const [Marks, setMarks] = useState(null);
   const [searchTerm, setSearchTerm] = useState('');
 
+  // Pagination state
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 10; // Number of items per page
+
   const styles = {
     container: {
       backgroundImage: `url(${backgroundImage})`,
@@ -76,6 +80,21 @@ const SEM = () => {
       justifyContent: 'space-between',
       marginBottom: '20px',
     },
+    pagination: {
+      display: 'flex',
+      justifyContent: 'center',
+      marginTop: '20px',
+    },
+    paginationButton: {
+      backgroundColor: '#9e1c3f',
+      color: '#fff',
+      padding: '10px 20px',
+      border: 'none',
+      borderRadius: '5px',
+      cursor: 'pointer',
+      margin: '0 5px',
+      transition: 'background-color 0.3s',
+    },
   };
 
   const [buttonHover, setButtonHover] = useState(false);
@@ -118,8 +137,7 @@ const SEM = () => {
         'Content-Type': 'application/json',
         'Authorization':`Bearer ${staff.token}`
       }  
-    }
-    )
+    })
     Object.entries(Marks).map(async([studentId, marks]) =>{
       const info = {Marks:marks}
       const response = await fetch('http://localhost:4000/cbcs/staf/Marks/given/'+studentId, {
@@ -131,9 +149,7 @@ const SEM = () => {
       }
     })
     })
-    if(response.ok)
-    {window.location.reload()}
-    
+    if(response.ok) { window.location.reload() }
   }
 
   if (loading) {
@@ -144,6 +160,12 @@ const SEM = () => {
     student.Name.toLowerCase().includes(searchTerm.toLowerCase()) ||
     student.RegNo.toLowerCase().includes(searchTerm.toLowerCase())
   );
+
+  // Pagination logic
+  const indexOfLastItem = currentPage * itemsPerPage;
+  const indexOfFirstItem = indexOfLastItem - itemsPerPage;
+  const currentItems = filteredData.slice(indexOfFirstItem, indexOfLastItem);
+  const totalPages = Math.ceil(filteredData.length / itemsPerPage);
 
   return (
     <div style={styles.container}>
@@ -176,7 +198,7 @@ const SEM = () => {
               </tr>
             </thead>
             <tbody>
-              {filteredData.map((student) => (
+              {currentItems.map((student) => (
                 <tr key={student._id}>
                   <td style={styles.td}>{student.Name}</td>
                   <td style={styles.td}>{student.RegNo}</td>
@@ -199,6 +221,23 @@ const SEM = () => {
           >
             SUBMIT
           </button>
+          <div style={styles.pagination}>
+            <button
+              style={styles.paginationButton}
+              onClick={() => setCurrentPage(prev => Math.max(prev - 1, 1))}
+              disabled={currentPage === 1}
+            >
+              Previous
+            </button>
+            <span>{`Page ${currentPage} of ${totalPages}`}</span>
+            <button
+              style={styles.paginationButton}
+              onClick={() => setCurrentPage(prev => Math.min(prev + 1, totalPages))}
+              disabled={currentPage === totalPages}
+            >
+              Next
+            </button>
+          </div>
         </form>
       )}
     </div>

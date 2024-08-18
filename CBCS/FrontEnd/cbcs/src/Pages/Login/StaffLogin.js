@@ -6,6 +6,7 @@ import backgroundImage from '../Login/logo.png'; // Make sure this path is corre
 const StudentLogin = () => {
   const [Email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
   const { login, error, isLoading } = useStaffLogin('');
 
   const handleSubmit = async (e) => {
@@ -72,6 +73,14 @@ const StudentLogin = () => {
       border: '1px solid #ccc',
       fontSize: '16px',
     },
+    checkboxContainer: {
+      display: 'flex',
+      alignItems: 'center',
+      marginBottom: '20px',
+    },
+    checkbox: {
+      marginRight: '10px',
+    },
     button: {
       padding: '10px',
       borderRadius: '4px',
@@ -125,7 +134,7 @@ const StudentLogin = () => {
       <div style={styles.rightSide}>
         <div style={styles.formContainer}>
           <div style={styles.formHeader}>
-            <p style={styles.formTitle}>Enter your Details.</p>
+            <p style={styles.formTitle}>Enter your Details</p>
           </div>
           <form id="form" onSubmit={handleSubmit}>
             <div style={styles.formGroup}>
@@ -144,13 +153,23 @@ const StudentLogin = () => {
               <label htmlFor="Password" style={styles.label}>Password</label>
               <input
                 id="Password"
-                type="password"
+                type={showPassword ? 'text' : 'password'}
                 placeholder="Password"
                 style={styles.input}
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 required
               />
+            </div>
+            <div style={styles.checkboxContainer}>
+              <input
+                id="showPassword"
+                type="checkbox"
+                style={styles.checkbox}
+                checked={showPassword}
+                onChange={() => setShowPassword(!showPassword)}
+              />
+              <label htmlFor="showPassword">Show Password</label>
             </div>
             <button
               type="submit"

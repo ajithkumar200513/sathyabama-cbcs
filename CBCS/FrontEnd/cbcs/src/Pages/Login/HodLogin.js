@@ -1,20 +1,21 @@
 import React, { useState } from 'react';
 import { useHodLogin } from '../../Hooks/useHodLogin';
-import logo from '../Login/logo.png'; // Make sure this path is correct
 import { Link } from 'react-router-dom';
+import logo from '../Login/logo.png'; // Ensure the path is correct
 
 const StudentLogin = () => {
   const [Email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
   const { login, error, isLoading } = useHodLogin('');
-  
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     await login(Email, password);
   };
 
   const styles = {
-    bodyLog: {
+    container: {
       display: 'flex',
       justifyContent: 'center',
       alignItems: 'center',
@@ -25,21 +26,36 @@ const StudentLogin = () => {
       backgroundPosition: 'center',
       backgroundRepeat: 'no-repeat',
       position: 'relative',
-      padding: '20px', // Added padding for responsiveness
     },
-    containerLog: {
+    formContainer: {
+      backgroundColor: 'rgba(255, 255, 255, 0.9)', // Semi-transparent white
       padding: '30px',
       borderRadius: '8px',
       boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)',
-      backgroundColor: '#fff',
       maxWidth: '400px',
-      width: '100%', // Changed to 100% for responsiveness
+      width: '100%',
       textAlign: 'center',
-      zIndex: 2,
-    },
-    inputField: {
       position: 'relative',
+      zIndex: 2, // Ensure this is above the home button
+    },
+    formHeader: {
       marginBottom: '20px',
+    },
+    formTitle: {
+      fontSize: '24px',
+      fontWeight: 'bold',
+      margin: 0,
+      color: '#333',
+    },
+    formGroup: {
+      marginBottom: '20px',
+      position: 'relative',
+    },
+    label: {
+      display: 'block',
+      marginBottom: '5px',
+      fontWeight: 'bold',
+      color: '#333',
     },
     input: {
       width: '100%',
@@ -48,20 +64,17 @@ const StudentLogin = () => {
       border: '1px solid #ccc',
       fontSize: '16px',
     },
-    underline: {
-      position: 'absolute',
-      bottom: '0',
-      left: '0',
-      height: '2px',
-      width: '100%',
-      backgroundColor: '#9e1c3f',
-      transform: 'scaleX(0)',
-      transition: 'transform 0.3s',
+    checkboxContainer: {
+      display: 'flex',
+      alignItems: 'center',
+      marginTop: '10px',
     },
-    inputFieldFocused: {
-      transform: 'scaleX(1)',
+    checkboxLabel: {
+      marginLeft: '8px',
+      fontSize: '14px',
+      color: '#333',
     },
-    submitButton: {
+    button: {
       padding: '10px',
       borderRadius: '4px',
       border: 'none',
@@ -69,15 +82,15 @@ const StudentLogin = () => {
       color: '#fff',
       fontSize: '16px',
       cursor: 'pointer',
-      transition: 'transform 0.2s',
+      transition: 'background-color 0.3s',
       width: '100%',
     },
-    submitButtonHover: {
-      transform: 'scale(1.05)',
+    buttonHover: {
+      backgroundColor: '#c2185b',
     },
-    errorLog: {
-      marginTop: '10px',
+    errorMessage: {
       color: 'red',
+      marginTop: '10px',
     },
     homeButton: {
       position: 'absolute',
@@ -89,67 +102,80 @@ const StudentLogin = () => {
       border: 'none',
       borderRadius: '4px',
       cursor: 'pointer',
-      zIndex: 1,
+      zIndex: 1, // Ensure this is below the form container
     },
     homeButtonHover: {
       backgroundColor: '#c2185b',
+    },
+    linkStyle: {
+      color: '#fff',
+      textDecoration: 'none',
     },
   };
 
   const [buttonHovered, setButtonHovered] = useState(false);
 
   return (
-    <div style={styles.bodyLog}>
+    <div style={styles.container}>
       <button
         style={{ ...styles.homeButton, ...(buttonHovered ? styles.homeButtonHover : {}) }}
         onMouseEnter={() => setButtonHovered(true)}
         onMouseLeave={() => setButtonHovered(false)}
       >
-        <Link to="/" style={{ color: '#fff', textDecoration: 'none' }}>Home</Link>
+        <Link to="/" style={styles.linkStyle}>Home</Link>
       </button>
-      <main style={styles.containerLog}>
-        <h2>Login</h2>
-        <form onSubmit={handleSubmit} className='log-form'>
-          <div style={styles.inputField}>
+      <div style={styles.formContainer}>
+        <div style={styles.formHeader}>
+          <p style={styles.formTitle}>Enter your Details</p>
+        </div>
+        <form id="form" onSubmit={handleSubmit}>
+          <div style={styles.formGroup}>
+            <label htmlFor="Email" style={styles.label}>Email</label>
             <input
+              id="Email"
               type="text"
-              name="username"
-              id="username"
-              placeholder="Enter Your Username"
+              placeholder="Email"
+              style={styles.input}
               value={Email}
-              onChange={(e) => { setEmail(e.target.value); }}
-              style={styles.input}
-              onFocus={(e) => e.target.nextElementSibling.style.transform = 'scaleX(1)'}
-              onBlur={(e) => e.target.nextElementSibling.style.transform = 'scaleX(0)'}
+              onChange={(e) => setEmail(e.target.value)}
+              required
             />
-            <div style={styles.underline}></div>
           </div>
-          <div style={styles.inputField}>
+          <div style={styles.formGroup}>
+            <label htmlFor="Password" style={styles.label}>Password</label>
             <input
-              type="password"
-              name="password"
-              id="password"
-              placeholder="Enter Your Password"
-              value={password}
-              onChange={(e) => { setPassword(e.target.value); }}
+              id="Password"
+              type={showPassword ? 'text' : 'password'}
+              placeholder="Password"
               style={styles.input}
-              onFocus={(e) => e.target.nextElementSibling.style.transform = 'scaleX(1)'}
-              onBlur={(e) => e.target.nextElementSibling.style.transform = 'scaleX(0)'}
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              required
             />
-            <div style={styles.underline}></div>
           </div>
-          <input
+          <div style={styles.checkboxContainer}>
+            <input
+              type="checkbox"
+              id="showPassword"
+              checked={showPassword}
+              onChange={() => setShowPassword(!showPassword)}
+            />
+            <label htmlFor="showPassword" style={styles.checkboxLabel}>Show Password</label>
+          </div>
+          <button
             type="submit"
-            value="Login"
-            style={{ ...styles.submitButton, ...(buttonHovered ? styles.submitButtonHover : {}) }}
+            style={{ ...styles.button, ...(buttonHovered ? styles.buttonHover : {}) }}
             onMouseEnter={() => setButtonHovered(true)}
             onMouseLeave={() => setButtonHovered(false)}
-          />
+            disabled={isLoading}
+          >
+            {isLoading ? 'Logging in...' : 'Log In'}
+          </button>
         </form>
-        {error && <div style={styles.errorLog}>{error}</div>}
-      </main>
+        {error && <div style={styles.errorMessage}>{error}</div>}
+      </div>
     </div>
   );
-}
+};
 
 export default StudentLogin;

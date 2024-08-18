@@ -9,11 +9,15 @@ const AttendanceSheet = () => {
   const [Dates, setDates] = useState();
   const [curdate, setcur] = useState();
   const [resid, setresid] = useState();
+  const [attendance, setAttendance] = useState(null);
   const { staff } = useStaffAuthContext();
   const today = new Date();
   const formattedDate = formatDate(today);
   const [loading, setLoading] = useState(true);
-  const [attendance, setAttendance] = useState(null);
+  
+  // Pagination State
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 10;
 
   const toggleAttendance = (studentId) => {
     setAttendance((prevAttendance) => ({
@@ -121,6 +125,20 @@ const AttendanceSheet = () => {
     }
   };
 
+  // Pagination Logic
+  const indexOfLastItem = currentPage * itemsPerPage;
+  const indexOfFirstItem = indexOfLastItem - itemsPerPage;
+  const currentData = filteredData.slice(indexOfFirstItem, indexOfLastItem);
+  const totalPages = Math.ceil(filteredData.length / itemsPerPage);
+
+  const handlePreviousPage = () => {
+    setCurrentPage(prevPage => Math.max(prevPage - 1, 1));
+  };
+
+  const handleNextPage = () => {
+    setCurrentPage(prevPage => Math.min(prevPage + 1, totalPages));
+  };
+
   if (loading) {
     return <p>Loading...</p>;
   }
@@ -171,11 +189,11 @@ const AttendanceSheet = () => {
       fontSize: '16px',
     },
     searchInput: {
-      padding: '10px',
+      padding: '10px 20px',
       borderRadius: '4px',
       border: '1px solid #ccc',
       fontSize: '16px',
-      marginBottom: '20px',
+      marginBottom: '2px',
       width: '80%',
       maxWidth: '400px',
     },
@@ -193,6 +211,26 @@ const AttendanceSheet = () => {
       display: 'flex',
       alignItems: 'center',
       marginBottom: '20px',
+    },
+    paginationContainer: {
+      marginTop: '20px',
+      display: 'flex',
+      justifyContent: 'center',
+      alignItems: 'center',
+    },
+    paginationButton: {
+      padding: '10px 20px',
+      backgroundColor: '#9e1c3f',
+      color: '#fff',
+      border: 'none',
+      borderRadius: '4px',
+      cursor: 'pointer',
+      fontSize: '16px',
+      margin: '0 5px',
+    },
+    paginationButtonDisabled: {
+      backgroundColor: '#ccc',
+      cursor: 'not-allowed',
     }
   };
 
@@ -225,7 +263,7 @@ const AttendanceSheet = () => {
               </tr>
             </thead>
             <tbody>
-              {filteredData.map((student) => (
+              {currentData.map((student) => (
                 <tr key={student._id}>
                   <td style={styles.td}>{student.RegNo}</td>
                   <td style={styles.td}>{student.Name}</td>
@@ -243,6 +281,23 @@ const AttendanceSheet = () => {
           <button style={styles.submitButton} onClick={(e) => handleSubmit(e)}>SUBMIT</button>
         </form>
       }
+      <div style={styles.paginationContainer}>
+        <button
+          style={{ ...styles.paginationButton, ...(currentPage === 1 ? styles.paginationButtonDisabled : {}) }}
+          onClick={handlePreviousPage}
+          disabled={currentPage === 1}
+        >
+          Previous
+        </button>
+        <span>Page {currentPage} of {totalPages}</span>
+        <button
+          style={{ ...styles.paginationButton, ...(currentPage === totalPages ? styles.paginationButtonDisabled : {}) }}
+          onClick={handleNextPage}
+          disabled={currentPage === totalPages}
+        >
+          Next
+        </button>
+      </div>
     </div>
   );
 };

@@ -9,6 +9,7 @@ const StudentSignup = () => {
   const [Dept, setDept] = useState('');
   const [RegNo, setRegNo] = useState('');
   const [password, setPassword] = useState('');
+  const [showPassword, setShowPassword] = useState(false); // State for toggling password visibility
   const { signup, error, isLoading } = useSignup();
 
   const handleSubmit = async (e) => {
@@ -23,20 +24,21 @@ const StudentSignup = () => {
       alignItems: 'center',
       height: '100vh',
       backgroundColor: '#f0f0f0',
-      backgroundImage: `url(${backgroundImage})`, // Background image import
+      backgroundImage: `url(${backgroundImage})`,
       backgroundSize: 'cover',
       backgroundPosition: 'center',
       backgroundRepeat: 'no-repeat',
-      position: 'relative',
+      padding: '20px',
     },
     form: {
-      backgroundColor: 'rgba(255, 255, 255, 0.9)', // Semi-transparent white
-      padding: '30px',
+      backgroundColor: 'rgba(255, 255, 255, 0.9)',
+      padding: '20px',
       borderRadius: '8px',
       boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)',
-      maxWidth: '500px',
+      maxWidth: '400px',
       width: '100%',
       textAlign: 'center',
+      boxSizing: 'border-box',
     },
     label: {
       display: 'block',
@@ -47,27 +49,27 @@ const StudentSignup = () => {
     },
     input: {
       width: '100%',
-      padding: '10px',
+      padding: '8px',
       borderRadius: '4px',
       border: '1px solid #ccc',
-      fontSize: '16px',
-      marginBottom: '20px',
+      fontSize: '14px',
+      marginBottom: '15px',
     },
     select: {
       width: '100%',
-      padding: '10px',
+      padding: '8px',
       borderRadius: '4px',
       border: '1px solid #ccc',
-      fontSize: '16px',
-      marginBottom: '20px',
+      fontSize: '14px',
+      marginBottom: '15px',
     },
     button: {
-      padding: '10px',
+      padding: '8px',
       borderRadius: '4px',
       border: 'none',
       backgroundColor: '#9e1c3f',
       color: '#fff',
-      fontSize: '16px',
+      fontSize: '14px',
       cursor: 'pointer',
       transition: 'background-color 0.3s',
       width: '100%',
@@ -78,6 +80,18 @@ const StudentSignup = () => {
     error: {
       color: 'red',
       marginTop: '10px',
+    },
+    checkboxContainer: {
+      display: 'flex',
+      alignItems: 'center',
+      marginTop: '-10px', // Adjust to reduce space
+      marginBottom: '15px', // Reduced margin for better spacing
+      justifyContent: 'center', // Center the checkbox and label
+    },
+    checkboxLabel: {
+      fontSize: '14px',
+      color: '#333',
+      marginLeft: '5px', // Adjust spacing between checkbox and label
     },
   };
 
@@ -146,12 +160,23 @@ const StudentSignup = () => {
         </select>
         <label style={styles.label}>Set Password</label>
         <input
-          type="password"
+          type={showPassword ? 'text' : 'password'} // Toggle input type
           style={styles.input}
           onChange={(e) => setPassword(e.target.value)}
           value={password}
           required
         />
+        <div style={styles.checkboxContainer}>
+          <input
+            type="checkbox"
+            id="showPassword"
+            onChange={() => setShowPassword(!showPassword)}
+            checked={showPassword}
+          />
+          <label htmlFor="showPassword" style={styles.checkboxLabel}>
+            Show Password
+          </label>
+        </div>
         <button
           type="submit"
           style={{ ...styles.button, ...(buttonHovered ? styles.buttonHover : {}) }}

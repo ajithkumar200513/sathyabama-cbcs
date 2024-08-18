@@ -1,13 +1,17 @@
-import React, { useEffect, useState } from 'react'
-import { useStaffAuthContext } from '../Hooks/useStaffAuthContext'
+import React, { useEffect, useState } from 'react';
+import { useStaffAuthContext } from '../Hooks/useStaffAuthContext';
 import backgroundImage from '../css/logo.png'; // Ensure this path is correct
 
 const CAE1 = () => {
-  const [Data, setData] = useState([])
+  const [Data, setData] = useState([]);
   const { staff } = useStaffAuthContext();
-  const [loading, setLoading] = useState(true)
+  const [loading, setLoading] = useState(true);
   const [Marks, setMarks] = useState(null);
   const [searchTerm, setSearchTerm] = useState('');
+
+  // Pagination state
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 10;
 
   const styles = {
     container: {
@@ -76,6 +80,26 @@ const CAE1 = () => {
       justifyContent: 'space-between',
       marginBottom: '20px',
     },
+    paginationContainer: {
+      marginTop: '20px',
+      display: 'flex',
+      justifyContent: 'center',
+      alignItems: 'center',
+    },
+    paginationButton: {
+      padding: '10px 20px',
+      backgroundColor: '#9e1c3f',
+      color: '#fff',
+      border: 'none',
+      borderRadius: '5px',
+      cursor: 'pointer',
+      fontSize: '16px',
+      margin: '0 5px',
+    },
+    paginationButtonDisabled: {
+      backgroundColor: '#ccc',
+      cursor: 'not-allowed',
+    }
   };
 
   const [buttonHover, setButtonHover] = useState(false);
@@ -92,58 +116,71 @@ const CAE1 = () => {
       try {
         const response = await fetch('http://localhost:4000/cbcs/staf/Attendence/' + staff.course_id, {
           headers: { 'Authorization': `Bearer ${staff.token}` }
-        })
-        const json = await response.json()
+        });
+        const json = await response.json();
         if (response.ok) {
-          setData(json)
+          setData(json);
         }
       } catch (error) {
         console.error();
       } finally {
-        setLoading(false)
+        setLoading(false);
       }
-    }
+    };
     if (staff) {
-      fetchdata()
+      fetchdata();
     }
   }, [staff]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const info = { CAE1: true, CAE2: false, SEM: false }
+    const info = { CAE1: true, CAE2: false, SEM: false };
     const response = await fetch('http://localhost:4000/cbcs/staf/Marks/given/staffinfo/' + staff.id, {
       method: 'POST',
       body: JSON.stringify(info),
       headers: {
         'Content-Type': 'application/json',
-        'Authorization':`Bearer ${staff.token}`
-      }  
-    }
-    )
-    Object.entries(Marks).map(async([studentId, marks]) =>{
-      const info = {Marks:marks}
-      const response = await fetch('http://localhost:4000/cbcs/staf/Marks/given/CAE1'+studentId, {
-      method: 'POST',
-      body: JSON.stringify(info),
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization':`Bearer ${staff.token}`
+        'Authorization': `Bearer ${staff.token}`
       }
-    })
-    })
-    if(response.ok)
-    {window.location.reload()}
-    
-  }
+    });
+    Object.entries(Marks).map(async ([studentId, marks]) => {
+      const info = { Marks: marks };
+      const response = await fetch('http://localhost:4000/cbcs/staf/Marks/given/CAE1/' + studentId, {
+        method: 'POST',
+        body: JSON.stringify(info),
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${staff.token}`
+        }
+      });
+    });
+    if (response.ok) {
+      window.location.reload();
+    }
+  };
 
   if (loading) {
     return <p>Loading...</p>;
   }
 
-  const filteredData = Data.filter(student => 
+  const filteredData = Data.filter(student =>
     student.Name.toLowerCase().includes(searchTerm.toLowerCase()) ||
     student.RegNo.toLowerCase().includes(searchTerm.toLowerCase())
   );
+
+  // Pagination Logic
+  const indexOfLastItem = currentPage * itemsPerPage;
+  const indexOfFirstItem = indexOfLastItem - itemsPerPage;
+  const currentData = filteredData.slice(indexOfFirstItem, indexOfLastItem);
+  const totalPages = Math.ceil(filteredData.length / itemsPerPage);
+
+  const handlePreviousPage = () => {
+    setCurrentPage(prevPage => Math.max(prevPage - 1, 1));
+  };
+
+  const handleNextPage = () => {
+    setCurrentPage(prevPage => Math.min(prevPage + 1, totalPages));
+  };
 
   return (
     <div style={styles.container}>
@@ -158,8 +195,8 @@ const CAE1 = () => {
               onChange={(e) => setSearchTerm(e.target.value)}
               style={styles.input}
             />
-            <button 
-              type="button" 
+            <button
+              type="button"
               style={styles.button}
               onMouseEnter={() => setButtonHover(true)}
               onMouseLeave={() => setButtonHover(false)}
@@ -176,7 +213,7 @@ const CAE1 = () => {
               </tr>
             </thead>
             <tbody>
-              {filteredData.map((student) => (
+              {currentData.map((student) => (
                 <tr key={student._id}>
                   <td style={styles.td}>{student.Name}</td>
                   <td style={styles.td}>{student.RegNo}</td>
@@ -191,6 +228,23 @@ const CAE1 = () => {
               ))}
             </tbody>
           </table>
+          <div style={styles.paginationContainer}>
+            <button
+              style={{ ...styles.paginationButton, ...(currentPage === 1 ? styles.paginationButtonDisabled : {}) }}
+              onClick={handlePreviousPage}
+              disabled={currentPage === 1}
+            >
+              Previous
+            </button>
+            <span>Page {currentPage} of {totalPages}</span>
+            <button
+              style={{ ...styles.paginationButton, ...(currentPage === totalPages ? styles.paginationButtonDisabled : {}) }}
+              onClick={handleNextPage}
+              disabled={currentPage === totalPages}
+            >
+              Next
+            </button>
+          </div>
           <button
             onClick={(e) => handleSubmit(e)}
             style={{ ...styles.button, ...(buttonHover ? styles.buttonHover : {}) }}
@@ -202,7 +256,7 @@ const CAE1 = () => {
         </form>
       )}
     </div>
-  )
-}
+  );
+};
 
-export default CAE1
+export default CAE1;

@@ -11,6 +11,14 @@ const AttendenceInfo = () => {
   const [dateSearchQuery, setDateSearchQuery] = useState('');
   const [filteredDates, setFilteredDates] = useState([]);
 
+  // Pagination states for dates
+  const [currentPageDates, setCurrentPageDates] = useState(1);
+  const itemsPerPageDates = 90; // Display 90 dates per page
+
+  // Pagination states for attendance data
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 10;
+
   const handleclick = async (value) => {
     setPDate(value);
     const Data = { Id: `${staff.id}`, Date: `${value}` };
@@ -71,6 +79,34 @@ const AttendenceInfo = () => {
     student.StudentId.Name.toLowerCase().includes(searchQuery.toLowerCase()) ||
     student.StudentId.RegNo.toLowerCase().includes(searchQuery.toLowerCase())
   );
+
+  // Pagination logic for dates
+  const indexOfLastDate = currentPageDates * itemsPerPageDates;
+  const indexOfFirstDate = indexOfLastDate - itemsPerPageDates;
+  const currentDates = filteredDates.slice(indexOfFirstDate, indexOfLastDate);
+  const totalPagesDates = Math.ceil(filteredDates.length / itemsPerPageDates);
+
+  // Pagination logic for attendance data
+  const indexOfLastItem = currentPage * itemsPerPage;
+  const indexOfFirstItem = indexOfLastItem - itemsPerPage;
+  const currentItems = filteredAttendenceData.slice(indexOfFirstItem, indexOfLastItem);
+  const totalPages = Math.ceil(filteredAttendenceData.length / itemsPerPage);
+
+  const handlePageChangeDates = (direction) => {
+    setCurrentPageDates(prevPage => {
+      if (direction === 'next' && prevPage < totalPagesDates) return prevPage + 1;
+      if (direction === 'prev' && prevPage > 1) return prevPage - 1;
+      return prevPage;
+    });
+  };
+
+  const handlePageChange = (direction) => {
+    setCurrentPage(prevPage => {
+      if (direction === 'next' && prevPage < totalPages) return prevPage + 1;
+      if (direction === 'prev' && prevPage > 1) return prevPage - 1;
+      return prevPage;
+    });
+  };
 
   const styles = {
     container: {
@@ -157,6 +193,25 @@ const AttendenceInfo = () => {
     absent: {
       color: 'red',
     },
+    pagination: {
+      display: 'flex',
+      justifyContent: 'center',
+      margin: '20px 0',
+    },
+    paginationButton: {
+      padding: '10px 20px',
+      borderRadius: '4px',
+      border: 'none',
+      backgroundColor: '#9e1c3f',
+      color: '#fff',
+      cursor: 'pointer',
+      margin: '0 5px',
+      transition: 'background-color 0.3s',
+    },
+    paginationButtonDisabled: {
+      backgroundColor: '#ccc',
+      cursor: 'not-allowed',
+    },
   };
 
   const [hovered, setHovered] = useState(null);
@@ -176,7 +231,7 @@ const AttendenceInfo = () => {
             <button onClick={handleDateSearch} style={styles.searchButton}>Search</button>
           </div>
           <div style={styles.datesGrid}>
-            {filteredDates.map((value) => (
+            {currentDates.map((value) => (
               <div
                 key={value.Date}
                 style={{
@@ -190,6 +245,29 @@ const AttendenceInfo = () => {
                 {value.Date}
               </div>
             ))}
+          </div>
+          <div style={styles.pagination}>
+            <button
+              onClick={() => handlePageChangeDates('prev')}
+              style={{
+                ...styles.paginationButton,
+                ...(currentPageDates === 1 ? styles.paginationButtonDisabled : {}),
+              }}
+              disabled={currentPageDates === 1}
+            >
+              Previous
+            </button>
+            <span>{currentPageDates} / {totalPagesDates}</span>
+            <button
+              onClick={() => handlePageChangeDates('next')}
+              style={{
+                ...styles.paginationButton,
+                ...(currentPageDates === totalPagesDates ? styles.paginationButtonDisabled : {}),
+              }}
+              disabled={currentPageDates === totalPagesDates}
+            >
+              Next
+            </button>
           </div>
         </div>
       )}
@@ -211,7 +289,7 @@ const AttendenceInfo = () => {
               </tr>
             </thead>
             <tbody>
-              {filteredAttendenceData.map((value) => (
+              {currentItems.map((value) => (
                 <tr key={value.StudentId.RegNo}>
                   <td style={styles.tableBodyCell}>{value.StudentId.Name}</td>
                   <td style={styles.tableBodyCell}>{value.StudentId.RegNo}</td>
@@ -227,6 +305,29 @@ const AttendenceInfo = () => {
               ))}
             </tbody>
           </table>
+          <div style={styles.pagination}>
+            <button
+              onClick={() => handlePageChange('prev')}
+              style={{
+                ...styles.paginationButton,
+                ...(currentPage === 1 ? styles.paginationButtonDisabled : {}),
+              }}
+              disabled={currentPage === 1}
+            >
+              Previous
+            </button>
+            <span>{currentPage} / {totalPages}</span>
+            <button
+              onClick={() => handlePageChange('next')}
+              style={{
+                ...styles.paginationButton,
+                ...(currentPage === totalPages ? styles.paginationButtonDisabled : {}),
+              }}
+              disabled={currentPage === totalPages}
+            >
+              Next
+            </button>
+          </div>
         </div>
       )}
     </div>

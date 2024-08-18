@@ -6,6 +6,8 @@ const CoeTable = ({ Dept }) => {
   const [data, setData] = useState([]);
   const [searchTerm, setSearchTerm] = useState('');
   const [filteredData, setFilteredData] = useState([]);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [rowsPerPage] = useState(10);
   const ip = { "Dept": Dept };
 
   useEffect(() => {
@@ -49,13 +51,8 @@ const CoeTable = ({ Dept }) => {
       }
     };
 
-    // Check orientation on component mount
     handleOrientationChange();
-
-    // Listen for orientation changes
     window.addEventListener('resize', handleOrientationChange);
-
-    // Cleanup event listener on component unmount
     return () => {
       window.removeEventListener('resize', handleOrientationChange);
     };
@@ -89,27 +86,28 @@ const CoeTable = ({ Dept }) => {
       fontSize: '16px',
       marginBottom: '10px',
       width: '80%',
-      maxWidth: '500px',
+      maxWidth: '400px',
     },
     studentDetails: {
       width: '100%',
-      maxWidth: '1200px',
+      maxWidth: '1000px',
       overflowX: 'auto',
     },
     table: {
       width: '100%',
       borderCollapse: 'collapse',
+      fontSize: '14px', // Slightly larger font size
     },
     th: {
       fontWeight: 'bold',
       textAlign: 'left',
-      padding: '12px',
+      padding: '10px', // Slightly larger padding
       backgroundColor: '#f2f2f2',
       borderBottom: '2px solid #ddd',
     },
     td: {
       textAlign: 'left',
-      padding: '12px',
+      padding: '10px', // Slightly larger padding
       borderBottom: '1px solid #ddd',
     },
     tr: {
@@ -121,20 +119,53 @@ const CoeTable = ({ Dept }) => {
         backgroundColor: '#f1f1f1',
       },
     },
+    pagination: {
+      display: 'flex',
+      justifyContent: 'center',
+      marginTop: '20px',
+    },
+    paginationButton: {
+      padding: '8px 16px', // Slightly larger button size
+      margin: '0 5px',
+      cursor: 'pointer',
+      borderRadius: '4px',
+      backgroundColor: 'rgba(158, 28, 63, 0.9)', // Same color theme as logout button
+      color: '#fff',
+      border: 'none',
+      fontSize: '14px', // Slightly larger font size
+      '&:disabled': {
+        backgroundColor: '#ccc',
+        cursor: 'not-allowed',
+      },
+    },
     '@media (max-width: 768px)': {
       searchInput: {
         width: '95%',
       },
       table: {
-        fontSize: '14px',
+        fontSize: '12px', // Smaller font size for mobile
       },
       th: {
-        padding: '10px',
+        padding: '8px', // Smaller padding for mobile
       },
       td: {
-        padding: '10px',
+        padding: '8px', // Smaller padding for mobile
       },
     },
+  };
+
+  const indexOfLastRow = currentPage * rowsPerPage;
+  const indexOfFirstRow = indexOfLastRow - rowsPerPage;
+  const currentRows = filteredData.slice(indexOfFirstRow, indexOfLastRow);
+
+  const totalPages = Math.ceil(filteredData.length / rowsPerPage);
+
+  const handleNextPage = () => {
+    setCurrentPage(prevPage => Math.min(prevPage + 1, totalPages));
+  };
+
+  const handlePreviousPage = () => {
+    setCurrentPage(prevPage => Math.max(prevPage - 1, 1));
   };
 
   return (
@@ -162,7 +193,7 @@ const CoeTable = ({ Dept }) => {
             </tr>
           </thead>
           <tbody>
-            {filteredData.map((value, index) => (
+            {currentRows.map((value, index) => (
               <tr key={index} style={styles.tr}>
                 <td style={styles.td}>{value.Name}</td>
                 <td style={styles.td}>{value.RegNo}</td>
@@ -176,8 +207,24 @@ const CoeTable = ({ Dept }) => {
           </tbody>
         </table>
       </div>
+      <div style={styles.pagination}>
+        <button
+          style={styles.paginationButton}
+          onClick={handlePreviousPage}
+          disabled={currentPage === 1}
+        >
+          Previous
+        </button>
+        <button
+          style={styles.paginationButton}
+          onClick={handleNextPage}
+          disabled={currentPage === totalPages}
+        >
+          Next
+        </button>
+      </div>
     </div>
   );
-}
+};
 
 export default CoeTable;

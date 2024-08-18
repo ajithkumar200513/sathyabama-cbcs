@@ -1,10 +1,12 @@
 import React, { useState } from 'react';
 import { useCoeLogin } from './../Hooks/UseCoeLogin';
-import logo from '../css/logo.png';
+import { Link } from 'react-router-dom';
+import backgroundImage from '../css/logo.png'; // Make sure this path is correct
 
 const CoeLogin = () => {
   const [Email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
   const { login, error, isLoading } = useCoeLogin('');
 
   const handleSubmit = async (e) => {
@@ -13,33 +15,56 @@ const CoeLogin = () => {
   };
 
   const styles = {
-    bodyLog: {
+    container: {
       display: 'flex',
       justifyContent: 'center',
       alignItems: 'center',
       height: '100vh',
-      backgroundColor:  '#ffffff',
-      backgroundImage: `url(${logo})`,
+      backgroundColor: '#f0f0f0',
+      backgroundImage: `url(${backgroundImage})`,
       backgroundSize: 'cover',
       backgroundPosition: 'center',
       backgroundRepeat: 'no-repeat',
       position: 'relative',
-      padding: '20px', // Added padding for better responsiveness
-      boxSizing: 'border-box', // Ensuring padding doesn't affect the overall width
     },
-    containerLog: {
+    leftSide: {
+      flex: 1,
+    },
+    rightSide: {
+      display: 'flex',
+      justifyContent: 'center',
+      alignItems: 'center',
       padding: '20px',
+      width: '100%',
+    },
+    formContainer: {
+      backgroundColor: 'rgba(255, 255, 255, 0.9)', // Semi-transparent white
+      padding: '30px',
       borderRadius: '8px',
       boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)',
-      backgroundColor: '#fff',
       maxWidth: '400px',
       width: '100%',
       textAlign: 'center',
-      zIndex: 2,
-    },
-    inputField: {
       position: 'relative',
+      zIndex: 2, // Ensure this is above the home button
+    },
+    formHeader: {
       marginBottom: '20px',
+    },
+    formTitle: {
+      fontSize: '24px',
+      fontWeight: 'bold',
+      margin: 0,
+      color: '#333',
+    },
+    formGroup: {
+      marginBottom: '20px',
+    },
+    label: {
+      display: 'block',
+      marginBottom: '5px',
+      fontWeight: 'bold',
+      color: '#333',
     },
     input: {
       width: '100%',
@@ -47,103 +72,120 @@ const CoeLogin = () => {
       borderRadius: '4px',
       border: '1px solid #ccc',
       fontSize: '16px',
-      boxSizing: 'border-box',
     },
-    underline: {
-      position: 'absolute',
-      bottom: '0',
-      left: '0',
-      height: '2px',
-      width: '100%',
-      backgroundColor: '#9e1c3f',
-      transform: 'scaleX(0)',
-      transition: 'transform 0.3s',
+    checkboxContainer: {
+      display: 'flex',
+      alignItems: 'center',
+      marginBottom: '20px',
     },
-    inputFieldFocused: {
-      transform: 'scaleX(1)',
+    checkbox: {
+      marginRight: '10px',
     },
-    submitButton: {
+    button: {
       padding: '10px',
       borderRadius: '4px',
       border: 'none',
       backgroundColor: '#9e1c3f',
       color: '#fff',
-
       fontSize: '16px',
       cursor: 'pointer',
-      width: '100%', // Ensuring button width is 100% for better responsiveness
-      boxSizing: 'border-box',
+      transition: 'background-color 0.3s',
+      width: '100%',
     },
-    errorLog: {
-      marginTop: '10px',
+    buttonHover: {
+      backgroundColor: '#c2185b',
+    },
+    errorMessage: {
       color: 'red',
+      marginTop: '10px',
     },
     homeButton: {
       position: 'absolute',
       top: '20px',
       left: '20px',
-      padding: '10px',
-      borderRadius: '4px',
-      border: 'none',
+      padding: '10px 20px',
       backgroundColor: '#9e1c3f',
       color: '#fff',
-      fontSize: '16px',
+      border: 'none',
+      borderRadius: '4px',
       cursor: 'pointer',
-      zIndex: 1,
-      transition: 'transform 0.3s',
+      zIndex: 1, // Ensure this is below the form container
     },
     homeButtonHover: {
-      transform: 'scale(1.05)',
+      backgroundColor: '#c2185b',
+    },
+    linkStyle: {
+      color: '#fff',
+      textDecoration: 'none',
     },
   };
 
+  const [buttonHovered, setButtonHovered] = useState(false);
+
   return (
-    <div style={styles.bodyLog}>
+    <div style={styles.container}>
       <button
-        style={styles.homeButton}
-        onMouseEnter={(e) => e.currentTarget.style.transform = 'scale(1.05)'}
-        onMouseLeave={(e) => e.currentTarget.style.transform = 'scale(1)'}
-        onClick={() => window.location.href = '/'}
+        style={{ ...styles.homeButton, ...(buttonHovered ? styles.homeButtonHover : {}) }}
+        onMouseEnter={() => setButtonHovered(true)}
+        onMouseLeave={() => setButtonHovered(false)}
       >
-        Home
+        <Link to="/" style={styles.linkStyle}>Home</Link>
       </button>
-      <main style={styles.containerLog}>
-        <h2>Login</h2>
-        <form onSubmit={handleSubmit} className='log-form'>
-          <div style={styles.inputField}>
-            <input
-              type="text"
-              name="username"
-              id="username"
-              placeholder="Enter Your Username"
-              value={Email}
-              onChange={(e) => { setEmail(e.target.value); }}
-              style={styles.input}
-              onFocus={(e) => e.target.nextElementSibling.style.transform = 'scaleX(1)'}
-              onBlur={(e) => e.target.nextElementSibling.style.transform = 'scaleX(0)'}
-            />
-            <div style={styles.underline}></div>
+      <div style={styles.rightSide}>
+        <div style={styles.formContainer}>
+          <div style={styles.formHeader}>
+            <p style={styles.formTitle}>Enter Your Details</p>
           </div>
-          <div style={styles.inputField}>
-            <input
-              type="password"
-              name="password"
-              id="password"
-              placeholder="Enter Your Password"
-              value={password}
-              onChange={(e) => { setPassword(e.target.value); }}
-              style={styles.input}
-              onFocus={(e) => e.target.nextElementSibling.style.transform = 'scaleX(1)'}
-              onBlur={(e) => e.target.nextElementSibling.style.transform = 'scaleX(0)'}
-            />
-            <div style={styles.underline}></div>
-          </div>
-          <input type="submit" value="Login" style={styles.submitButton} />
-        </form>
-        {error && <div style={styles.errorLog}>{error}</div>}
-      </main>
+          <form onSubmit={handleSubmit}>
+            <div style={styles.formGroup}>
+              <label htmlFor="Email" style={styles.label}>Email</label>
+              <input
+                id="Email"
+                type="text"
+                placeholder="Enter Your Email"
+                style={styles.input}
+                value={Email}
+                onChange={(e) => setEmail(e.target.value)}
+                required
+              />
+            </div>
+            <div style={styles.formGroup}>
+              <label htmlFor="Password" style={styles.label}>Password</label>
+              <input
+                id="Password"
+                type={showPassword ? 'text' : 'password'}
+                placeholder="Enter Your Password"
+                style={styles.input}
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                required
+              />
+            </div>
+            <div style={styles.checkboxContainer}>
+              <input
+                id="showPassword"
+                type="checkbox"
+                style={styles.checkbox}
+                checked={showPassword}
+                onChange={() => setShowPassword(!showPassword)}
+              />
+              <label htmlFor="showPassword">Show Password</label>
+            </div>
+            <button
+              type="submit"
+              style={{ ...styles.button, ...(buttonHovered ? styles.buttonHover : {}) }}
+              onMouseEnter={() => setButtonHovered(true)}
+              onMouseLeave={() => setButtonHovered(false)}
+              disabled={isLoading}
+            >
+              {isLoading ? 'Logging in...' : 'Log In'}
+            </button>
+          </form>
+          {error && <div style={styles.errorMessage}>{error}</div>}
+        </div>
+      </div>
     </div>
   );
-}
+};
 
 export default CoeLogin;
