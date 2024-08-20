@@ -186,6 +186,9 @@ const HodStudent = () => {
                 <th style={styles.th}>Registered Course</th>
                 <th style={styles.th}>Attendance</th>
                 <th style={styles.th}>Percentage</th>
+                <th style={styles.th}>CAE-1</th>
+                <th style={styles.th}>CAE-2</th>
+                <th style={styles.th}>SEM</th>
               </tr>
             </thead>
             <tbody>
@@ -204,6 +207,9 @@ const HodStudent = () => {
                     </button>
                   </td>
                   <td style={styles.td}>{percentage(value.Attendence)}</td>
+                  <td style={styles.td}>{value.CAE1 ? value.CAE1 :'N/A'}  </td>
+                  <td style={styles.td}>{value.CAE2? value.CAE2 :'N/A'}</td>
+                  <td style={styles.td}>{value.SEM? value.SEM :'N/A'}</td>
                 </tr>
               ))}
             </tbody>

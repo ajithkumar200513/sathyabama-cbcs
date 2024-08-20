@@ -189,7 +189,9 @@ const CoeTable = ({ Dept }) => {
               <th style={styles.th}>Date of Birth</th>
               <th style={styles.th}>Department</th>
               <th style={styles.th}>Course</th>
-              <th style={styles.th}>Marks</th>
+              <th style={styles.th}>CAE_1</th>
+              <th style={styles.th}>CAE_2</th>
+              <th style={styles.th}>SEM</th>
             </tr>
           </thead>
           <tbody>
@@ -201,7 +203,9 @@ const CoeTable = ({ Dept }) => {
                 <td style={styles.td}>{value.DOB}</td>
                 <td style={styles.td}>{value.Dept}</td>
                 <td style={styles.td}>{value.CourseInfo ? value.CourseInfo.CourseName : "Not Registered"}</td>
-                <td style={styles.td}>{value.Marks ? value.Marks.CAE1 : "N/A"}</td>
+                <td style={styles.td}>{value.CAE1 ? value.CAE1 : "N/A"}</td>
+                <td style={styles.td}>{value.CAE2 ? value.CAE2 : "N/A"}</td>
+                <td style={styles.td}>{value.SEM ? value.SEM : "N/A"}</td>
               </tr>
             ))}
           </tbody>
