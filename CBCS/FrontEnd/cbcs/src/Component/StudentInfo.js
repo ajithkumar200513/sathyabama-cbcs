@@ -103,9 +103,21 @@ const StudentInfo = ({ user }) => {
                                         <td style={styles.tableCell}>{value.CourseInfo?.CourseName || 'N/A'}</td>
                                     </tr>
                                     <tr>
-                                        <td style={styles.tableCell}>Marks:</td>
+                                        <td style={styles.tableCell}>CAE1:</td>
                                         <td style={styles.tableCell}>
-                                            {value.Marks ? value.Marks.CAE1 || 'N/A' : 'N/A'}
+                                            {value.CAE1 ? value.CAE1 : 'N/A'}
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td style={styles.tableCell}>CAE2:</td>
+                                        <td style={styles.tableCell}>
+                                            {value.CAE2 ? value.CAE2 : 'N/A'}
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td style={styles.tableCell}>SEM:</td>
+                                        <td style={styles.tableCell}>
+                                            {value.SEM ? value.SEM : 'N/A'}
                                         </td>
                                     </tr>
                                 </tbody>

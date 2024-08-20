@@ -25,19 +25,29 @@ import CAE1 from "./Component/CAE1";
 import CAE2 from "./Component/CAE2";
 import SEM from "./Component/SEM";
 import COEHOME from "./Component/COEHOME";
+import DeanHome from "./Component/DeanHome";
+import { UseDeanAuthContext } from "./Hooks/UseDeanAuthContext";
 function App() {
   const {user} = useAuthContext()
   const {HOD} = useHodAuthContext()
   const {staff} = useStaffAuthContext()
   const {COE} = useCoeAuthContext()
+  const {DEAN} = UseDeanAuthContext()
   console.log(user)
   console.log(HOD)
   console.log(staff)
   console.log(COE)
+  console.log(DEAN)
   return (
     <div>
       <BrowserRouter>
          <Routes>
+           <Route 
+            path='/DEAN'
+            element={!DEAN ? <Dean /> : <Navigate to='/Dean/home'/>}/>
+            <Route 
+            path='/DEAN/home'
+            element={DEAN ? <DeanHome /> : <Navigate to='/Dean'/>}/>
             <Route 
             path='/' 
             element={!user  ? <UserType />: <Navigate to='/student/Course'/>}/>

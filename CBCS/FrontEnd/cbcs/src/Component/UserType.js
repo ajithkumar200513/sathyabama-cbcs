@@ -18,7 +18,8 @@ const UserType = () => {
       <div className='menu-container'>
         <h1 className='heading'>SELECT ROLE</h1>
         <nav>
-          <Link to='/COE' className='btn btn-primary btn-block'>ADMIN</Link>
+          <Link to='/COE' className='btn btn-primary btn-block'>COE</Link>
+          <Link to ='/DEAN'  className='btn btn-primary btn-block'>DEAN</Link>
           <Link to='/hod' className='btn btn-primary btn-block'>HOD</Link>
           <Link to='/staf' className='btn btn-primary btn-block'>STAFF</Link>
           <Link to='/student' className='btn btn-primary btn-block'>STUDENT</Link>

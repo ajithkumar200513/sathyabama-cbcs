@@ -319,6 +319,9 @@ const StaffHome = () => {
                 <th style={styles.th}>Email</th>
                 <th style={styles.th}>DEPT</th>
                 <th style={styles.th}>Course</th>
+                <th style={styles.th}>CAE-1</th>
+                <th style={styles.th}>CAE-2</th>
+                <th style={styles.th}>SEM</th>
               </tr>
             </thead>
             <tbody>
@@ -329,6 +332,9 @@ const StaffHome = () => {
                   <td style={styles.td}>{student.Email}</td>
                   <td style={styles.td}>{student.Dept}</td>
                   <td style={styles.td}>{student.Course}</td>
+                  <td style={styles.td}>{student.CAE1? student.CAE1 : 'N/A'}</td>
+                  <td style={styles.td}>{student.CAE2? student.CAE2 : 'N/A'}</td>
+                  <td style={styles.td}>{student.SEM ? student.SEM : 'N/A'}</td>
                 </tr>
               ))}
             </tbody>
