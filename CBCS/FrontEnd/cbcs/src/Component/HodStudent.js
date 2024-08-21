@@ -9,7 +9,8 @@ const HodStudent = () => {
   const [Data, setData] = useState([]);
   const [search, setSearch] = useState('');
   const [currentPage, setCurrentPage] = useState(1);
-  const itemsPerPage = 10; // Number of items per page
+  const [currentAttendancePage, setCurrentAttendancePage] = useState(1);
+  const itemsPerPage = 10; // Number of items per page for both tables
 
   useEffect(() => {
     const fetchdata = async () => {
@@ -33,6 +34,7 @@ const HodStudent = () => {
   const handelclick = (value) => {
     setAttendancesheet(value);
     setAttendance(true);
+    setCurrentAttendancePage(1); // Reset attendance pagination to the first page
   };
 
   const percentage = (value) => {
@@ -47,12 +49,12 @@ const HodStudent = () => {
     return per.toFixed(2) + '%';
   };
 
-  // Pagination logic
+  // Pagination logic for students
   const filteredData = Data.filter((value) =>
     value.Name.toLowerCase().includes(search.toLowerCase()) ||
     value.RegNo.toLowerCase().includes(search.toLowerCase())
   );
-  
+
   const indexOfLastItem = currentPage * itemsPerPage;
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
   const currentItems = filteredData.slice(indexOfFirstItem, indexOfLastItem);
@@ -63,6 +65,20 @@ const HodStudent = () => {
       setCurrentPage(currentPage + 1);
     } else if (direction === 'prev' && currentPage > 1) {
       setCurrentPage(currentPage - 1);
+    }
+  };
+
+  // Pagination logic for attendance
+  const indexOfLastAttendanceItem = currentAttendancePage * itemsPerPage;
+  const indexOfFirstAttendanceItem = indexOfLastAttendanceItem - itemsPerPage;
+  const currentAttendanceItems = Attendencesheet.slice(indexOfFirstAttendanceItem, indexOfLastAttendanceItem);
+  const totalAttendancePages = Math.ceil(Attendencesheet.length / itemsPerPage);
+
+  const handleAttendancePageChange = (direction) => {
+    if (direction === 'next' && currentAttendancePage < totalAttendancePages) {
+      setCurrentAttendancePage(currentAttendancePage + 1);
+    } else if (direction === 'prev' && currentAttendancePage > 1) {
+      setCurrentAttendancePage(currentAttendancePage - 1);
     }
   };
 
@@ -77,10 +93,11 @@ const HodStudent = () => {
       flexDirection: 'column',
       alignItems: 'center',
       color: '#333',
+      overflowX: 'hidden', // Prevent horizontal scroll
     },
     table: {
       width: '100%',
-      maxWidth: '800px', // Adjust the maxWidth for a smaller table
+      maxWidth: '1000px', // Adjust maxWidth to fit content within screen
       borderCollapse: 'collapse',
       marginTop: '20px',
       backgroundColor: 'rgba(255, 255, 255, 0.9)', // Semi-transparent background to enhance readability
@@ -93,11 +110,13 @@ const HodStudent = () => {
       backgroundColor: '#9e1c3f', // COE theme color
       color: '#fff',
       textAlign: 'left',
+      fontSize: '14px', // Adjusted font size
     },
     td: {
       padding: '8px', // Reduced padding for smaller table cells
       textAlign: 'left',
       borderBottom: '1px solid #ddd',
+      fontSize: '14px', // Adjusted font size
     },
     tr: {
       backgroundColor: '#fff',
@@ -106,28 +125,32 @@ const HodStudent = () => {
       backgroundColor: '#f9f9f9',
     },
     button: {
-      padding: '8px 16px', // Reduced padding for smaller buttons
+      padding: '6px 12px', // Smaller padding for buttons
       backgroundColor: '#9e1c3f', // COE theme color
       color: '#fff',
       border: 'none',
       borderRadius: '5px',
       cursor: 'pointer',
       transition: 'background-color 0.3s',
+      fontSize: '14px', // Adjusted font size
     },
     buttonHover: {
       backgroundColor: '#d32f2f',
     },
     searchContainer: {
       display: 'flex',
-      justifyContent: 'center',
+      flexDirection: 'column', // Stack input and button vertically on smaller screens
+      alignItems: 'center',
       marginTop: '20px',
+      gap: '10px',
     },
     searchInput: {
       padding: '8px', // Reduced padding for search input
       borderRadius: '5px',
       border: '1px solid #ccc',
       fontSize: '14px', // Reduced font size for smaller search input
-      marginRight: '10px',
+      width: '100%', // Full width on smaller screens
+      maxWidth: '300px', // Limit the width on larger screens
     },
     searchButton: {
       padding: '8px 16px', // Reduced padding for search button
@@ -137,6 +160,7 @@ const HodStudent = () => {
       borderRadius: '5px',
       cursor: 'pointer',
       transition: 'background-color 0.3s',
+      fontSize: '14px', // Adjusted font size
     },
     searchButtonHover: {
       backgroundColor: '#d32f2f',
@@ -145,16 +169,17 @@ const HodStudent = () => {
       marginTop: '20px',
       display: 'flex',
       justifyContent: 'center',
+      gap: '5px',
     },
     pageButton: {
-      padding: '8px 16px', // Reduced padding for pagination buttons
+      padding: '6px 12px', // Reduced padding for pagination buttons
       backgroundColor: '#9e1c3f', // COE theme color
       color: '#fff',
       border: 'none',
       borderRadius: '5px',
       cursor: 'pointer',
-      margin: '0 5px',
       transition: 'background-color 0.3s',
+      fontSize: '14px', // Adjusted font size
     },
     pageButtonDisabled: {
       backgroundColor: '#ddd',
@@ -162,7 +187,6 @@ const HodStudent = () => {
     },
   };
   
-
   return (
     <div style={styles.container}>
       <div style={styles.searchContainer}>
@@ -234,22 +258,41 @@ const HodStudent = () => {
         </>
       )}
       {Attendence && (
-        <table style={styles.table}>
-          <thead>
-            <tr>
-              <th style={styles.th}>Date</th>
-              <th style={styles.th}>Attendance</th>
-            </tr>
-          </thead>
-          <tbody>
-            {Attendencesheet.map((value, index) => (
-              <tr key={index} style={index % 2 === 0 ? styles.tr : styles.trAlt}>
-                <td style={styles.td}>{value.Date}</td>
-                <td style={styles.td}>{value.present ? 'Present' : 'Absent'}</td>
+        <>
+          <table style={styles.table}>
+            <thead>
+              <tr>
+                <th style={styles.th}>Date</th>
+                <th style={styles.th}>Attendance</th>
               </tr>
-            ))}
-          </tbody>
-        </table>
+            </thead>
+            <tbody>
+              {currentAttendanceItems.map((value, index) => (
+                <tr key={index} style={index % 2 === 0 ? styles.tr : styles.trAlt}>
+                  <td style={styles.td}>{value.Date}</td>
+                  <td style={styles.td}>{value.present ? 'Present' : 'Absent'}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+          <div style={styles.pagination}>
+            <button
+              style={{ ...styles.pageButton, ...(currentAttendancePage === 1 ? styles.pageButtonDisabled : {}) }}
+              onClick={() => handleAttendancePageChange('prev')}
+              disabled={currentAttendancePage === 1}
+            >
+              Previous
+            </button>
+            <span>{currentAttendancePage} of {totalAttendancePages}</span>
+            <button
+              style={{ ...styles.pageButton, ...(currentAttendancePage === totalAttendancePages ? styles.pageButtonDisabled : {}) }}
+              onClick={() => handleAttendancePageChange('next')}
+              disabled={currentAttendancePage === totalAttendancePages}
+            >
+              Next
+            </button>
+          </div>
+        </>
       )}
     </div>
   );

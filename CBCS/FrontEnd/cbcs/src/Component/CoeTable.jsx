@@ -122,7 +122,9 @@ const CoeTable = ({ Dept }) => {
     pagination: {
       display: 'flex',
       justifyContent: 'center',
+      alignItems: 'center',
       marginTop: '20px',
+      gap: '10px',
     },
     paginationButton: {
       padding: '8px 16px', // Slightly larger button size
@@ -133,10 +135,14 @@ const CoeTable = ({ Dept }) => {
       color: '#fff',
       border: 'none',
       fontSize: '14px', // Slightly larger font size
-      '&:disabled': {
-        backgroundColor: '#ccc',
-        cursor: 'not-allowed',
-      },
+    },
+    paginationButtonDisabled: {
+      backgroundColor: '#ccc',
+      cursor: 'not-allowed',
+    },
+    pageIndicator: {
+      fontSize: '14px',
+      color: '#333',
     },
     '@media (max-width: 768px)': {
       searchInput: {
@@ -213,14 +219,15 @@ const CoeTable = ({ Dept }) => {
       </div>
       <div style={styles.pagination}>
         <button
-          style={styles.paginationButton}
+          style={{ ...styles.paginationButton, ...(currentPage === 1 ? styles.paginationButtonDisabled : {}) }}
           onClick={handlePreviousPage}
           disabled={currentPage === 1}
         >
           Previous
         </button>
+        <span style={styles.pageIndicator}>Page {currentPage} of {totalPages}</span>
         <button
-          style={styles.paginationButton}
+          style={{ ...styles.paginationButton, ...(currentPage === totalPages ? styles.paginationButtonDisabled : {}) }}
           onClick={handleNextPage}
           disabled={currentPage === totalPages}
         >
