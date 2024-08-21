@@ -112,32 +112,11 @@ const StaffHome = () => {
       textAlign: 'center',
       marginBottom: '20px',
     },
-    profilePicContainer: {
-      marginBottom: '20px',
-    },
-    profilePic: {
-      width: '100px',
-      height: '100px',
-      borderRadius: '50%',
-    },
-    uploadBox: {
-      width: '100px',
-      height: '100px',
-      borderRadius: '50%',
-      border: '2px dashed #ccc',
-      display: 'flex',
-      justifyContent: 'center',
-      alignItems: 'center',
-      cursor: 'pointer',
-      position: 'relative',
-    },
-    uploadBoxInput: {
-      position: 'absolute',
-      opacity: 0,
-      width: '100%',
-      height: '100%',
-      cursor: 'pointer',
-    },
+   
+   
+   
+   
+    
     info: {
       margin: '10px 0',
       fontWeight: 'bold',
@@ -232,16 +211,7 @@ const StaffHome = () => {
       color: '#fff',
       cursor: 'pointer',
     },
-    imageUploadButton: {
-      marginTop: '20px',
-      padding: '10px 20px',
-      backgroundColor: '#721022',
-      color: '#fff',
-      border: 'none',
-      borderRadius: '4px',
-      cursor: 'pointer',
-      textAlign: 'center',
-    },
+   
     '@media (max-width: 768px)': {
       container: {
         flexDirection: 'column',
@@ -271,23 +241,7 @@ const StaffHome = () => {
       {staff && (
         <div style={styles.sideNavbar}>
           <div style={styles.staffDetails}>
-            <div style={styles.profilePicContainer}>
-              {profilePic ? (
-                <img src={profilePic} alt="Profile" style={styles.profilePic} />
-              ) : (
-                <div style={styles.uploadBox}>
-                  <label htmlFor="file-upload" style={{ cursor: 'pointer' }}>
-                    <span>Upload</span>
-                  </label>
-                  <input
-                    type="file"
-                    id="file-upload"
-                    onChange={handleProfilePicChange}
-                    style={styles.uploadBoxInput}
-                  />
-                </div>
-              )}
-            </div>
+           
             <p style={styles.info}>{staff.Name}</p>
             <p style={styles.info}>{staff.Email}</p>
           </div>
