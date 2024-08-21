@@ -151,7 +151,7 @@ const StaffHome = () => {
       borderRadius: '4px',
       cursor: 'pointer',
       textAlign: 'center',
-      width: '100%',
+      width: '84%',
     },
     tableContainer: {
       flex: 1,
