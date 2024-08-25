@@ -55,17 +55,19 @@ This is a MERN (MongoDB, Express, React, Node.js) stack project developed for ma
 
 In one terminal window, start the backend server:
 
-bash
 
+ ```bash
 cd backend
 nodemon server.js
+ ```
 
 In another terminal window, start the frontend server:
 
-bash
 
+ ```bash
 cd frontend/cbcs
 npm start
+```
 
 5. **Open the application**:
 
