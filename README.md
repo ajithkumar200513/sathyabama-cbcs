@@ -106,7 +106,7 @@ sathyabama-cbcs/
 
 9. **License**
 
-This project is licensed under the Mozilla Public License 2.0 - see the LICENSE file for details.
+This project is licensed under the Mozilla Public License 2.0 - see the https://github.com/ajithkumar200513/sathyabama-cbcs/blob/main/LICENSE file for details.
 
 10. **Contact**
 
