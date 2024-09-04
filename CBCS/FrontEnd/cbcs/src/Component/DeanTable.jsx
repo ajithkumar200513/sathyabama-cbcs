@@ -52,6 +52,16 @@ const DeanTable = ({ Dept }) => {
     // Handle pagination
     const paginate = (pageNumber) => setCurrentPage(pageNumber);
 
+    // Handle print action
+    const handlePrint = () => {
+        const printContents = document.getElementById('printable-table').innerHTML;
+        const originalContents = document.body.innerHTML;
+        document.body.innerHTML = printContents;
+        window.print();
+        document.body.innerHTML = originalContents;
+        window.location.reload();
+    };
+
     if (error) {
         return <div style={{ color: 'red', textAlign: 'center', marginTop: '20px' }}>{error}</div>;
     }
@@ -70,6 +80,14 @@ const DeanTable = ({ Dept }) => {
         minHeight: '90vh',
         overflow: 'hidden', // Prevent scrolling
     };
+    const printButtonContainerStyles = {
+        display: 'flex',
+        justifyContent: 'flex-start', // Align button to the left
+        width: '100%',
+        maxWidth: '1200px',
+        marginBottom: '1px',
+    };
+
 
     const tableStyles = {
         width: '100%',
@@ -103,13 +121,14 @@ const DeanTable = ({ Dept }) => {
     };
 
     const buttonStyles = {
-        backgroundColor: '#9e1c3f',
+        backgroundColor: '#9e1c3f', // Main color theme
         color: 'white',
         padding: '10px 20px',
         border: 'none',
         borderRadius: '4px',
         cursor: 'pointer',
         transition: 'background-color 0.3s',
+        marginBottom: '10px', // Add some space below the button
     };
 
     const disabledButtonStyles = {
@@ -133,8 +152,15 @@ const DeanTable = ({ Dept }) => {
         fontSize: '16px',
     };
 
+    // Container for the print button
+   
     return (
         <div style={tableContainerStyles}>
+            <div style={printButtonContainerStyles}>
+                <button onClick={handlePrint} style={buttonStyles}>
+                    Print
+                </button>
+            </div>
             <div style={searchContainerStyles}>
                 <input
                     type="text"
@@ -147,7 +173,7 @@ const DeanTable = ({ Dept }) => {
             {currentData.length === 0 ? (
                 <div>No student information available.</div>
             ) : (
-                <>
+                <div id="printable-table">
                     <table style={tableStyles}>
                         <thead>
                             <tr>
@@ -195,7 +221,7 @@ const DeanTable = ({ Dept }) => {
                             Next
                         </button>
                     </div>
-                </>
+                </div>
             )}
         </div>
     );

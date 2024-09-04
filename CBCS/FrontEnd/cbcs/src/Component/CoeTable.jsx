@@ -58,6 +58,15 @@ const CoeTable = ({ Dept }) => {
     };
   }, []);
 
+  const handlePrint = () => {
+    const printContents = document.getElementById('printable-table').innerHTML;
+    const originalContents = document.body.innerHTML;
+    document.body.innerHTML = printContents;
+    window.print();
+    document.body.innerHTML = originalContents;
+    window.location.reload();
+  };
+
   const styles = {
     studentContainer: {
       display: 'flex',
@@ -71,6 +80,18 @@ const CoeTable = ({ Dept }) => {
       backgroundRepeat: 'no-repeat',
       backgroundPosition: 'center',
       minHeight: '100vh',
+    },
+    printButton: {
+      position: 'absolute',
+      top: '10px',
+      left: '10px',
+      padding: '10px 20px',
+      backgroundColor: 'rgba(158, 28, 63, 0.9)',
+      color: '#fff',
+      border: 'none',
+      borderRadius: '4px',
+      cursor: 'pointer',
+      fontSize: '14px',
     },
     searchContainer: {
       display: 'flex',
@@ -96,18 +117,18 @@ const CoeTable = ({ Dept }) => {
     table: {
       width: '100%',
       borderCollapse: 'collapse',
-      fontSize: '14px', // Slightly larger font size
+      fontSize: '14px',
     },
     th: {
       fontWeight: 'bold',
       textAlign: 'left',
-      padding: '10px', // Slightly larger padding
+      padding: '10px',
       backgroundColor: '#f2f2f2',
       borderBottom: '2px solid #ddd',
     },
     td: {
       textAlign: 'left',
-      padding: '10px', // Slightly larger padding
+      padding: '10px',
       borderBottom: '1px solid #ddd',
     },
     tr: {
@@ -127,14 +148,14 @@ const CoeTable = ({ Dept }) => {
       gap: '10px',
     },
     paginationButton: {
-      padding: '8px 16px', // Slightly larger button size
+      padding: '8px 16px',
       margin: '0 5px',
       cursor: 'pointer',
       borderRadius: '4px',
-      backgroundColor: 'rgba(158, 28, 63, 0.9)', // Same color theme as logout button
+      backgroundColor: 'rgba(158, 28, 63, 0.9)',
       color: '#fff',
       border: 'none',
-      fontSize: '14px', // Slightly larger font size
+      fontSize: '14px',
     },
     paginationButtonDisabled: {
       backgroundColor: '#ccc',
@@ -149,13 +170,13 @@ const CoeTable = ({ Dept }) => {
         width: '95%',
       },
       table: {
-        fontSize: '12px', // Smaller font size for mobile
+        fontSize: '12px',
       },
       th: {
-        padding: '8px', // Smaller padding for mobile
+        padding: '8px',
       },
       td: {
-        padding: '8px', // Smaller padding for mobile
+        padding: '8px',
       },
     },
   };
@@ -176,6 +197,8 @@ const CoeTable = ({ Dept }) => {
 
   return (
     <div style={styles.studentContainer}>
+      {/* Print Button */}
+      <button style={styles.printButton} onClick={handlePrint}>Print</button>
       <div style={styles.searchContainer}>
         <input
           type="text"
@@ -185,7 +208,7 @@ const CoeTable = ({ Dept }) => {
           style={styles.searchInput}
         />
       </div>
-      <div style={styles.studentDetails}>
+      <div style={styles.studentDetails} id="printable-table">
         <table style={styles.table}>
           <thead>
             <tr>

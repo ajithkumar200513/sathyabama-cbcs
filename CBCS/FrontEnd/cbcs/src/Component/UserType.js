@@ -1,17 +1,13 @@
 import { Link } from 'react-router-dom';
 import React from 'react';
 import '../css/UserType12.css';
-import videoSource from '../css/video.mp4'; // Correct import of the video
 import back from '../css/back.jpg'; // Correct import of the image (if needed)
 import Chatbot from './Chatbot'; // Import the Chatbot component
 
 const UserType = () => {
   return (
     <div className='usertype'>
-      <video autoPlay muted loop id='background-video'>
-        <source src={videoSource} type='video/mp4' />
-        Your browser does not support the video tag.
-      </video>
+      
       <div className='banner'>
         <img src={back} alt="Banner" />
       </div>
