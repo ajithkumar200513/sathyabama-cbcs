@@ -6,7 +6,7 @@ const CAE2 = () => {
   const [Data, setData] = useState([]);
   const { staff } = useStaffAuthContext();
   const [loading, setLoading] = useState(true);
-  const [Marks, setMarks] = useState({}); // Initialized as an empty object
+  const [Marks, setMarks] = useState({});
   const [searchTerm, setSearchTerm] = useState('');
 
   // Pagination state
@@ -112,12 +112,14 @@ const CAE2 = () => {
         const response = await fetch('https://sathyabama-cbcs.onrender.com/cbcs/staf/Attendence/' + staff.course_id, {
           headers: { 'Authorization': `Bearer ${staff.token}` }
         });
-        const json = await response.json();
         if (response.ok) {
+          const json = await response.json();
           setData(json);
+        } else {
+          console.error('Failed to fetch data:', response.statusText);
         }
       } catch (error) {
-        console.error(error);
+        console.error('Error fetching data:', error);
       } finally {
         setLoading(false);
       }
@@ -139,9 +141,12 @@ const CAE2 = () => {
           'Authorization': `Bearer ${staff.token}`
         }
       });
+      if (!response.ok) {
+        console.error('Failed to submit staff info:', response.statusText);
+        return;
+      }
 
-      if (!response.ok) throw new Error('Failed to submit staff info');
-
+      // Await all mark submissions
       await Promise.all(
         Object.entries(Marks).map(async ([studentId, marks]) => {
           const info = { Marks: marks };
@@ -153,17 +158,18 @@ const CAE2 = () => {
               'Authorization': `Bearer ${staff.token}`
             }
           });
-          if (!response.ok) throw new Error('Failed to submit marks for student ' + studentId);
+          if (!response.ok) {
+            console.error(`Failed to submit marks for student ${studentId}:`, response.statusText);
+          }
         })
       );
 
-      // Provide user feedback and update state instead of reloading
-      alert('Marks submitted successfully');
-      setData([]);
+      // Clear marks after successful submission
       setMarks({});
+      alert('Marks submitted successfully.');
     } catch (error) {
-      console.error(error);
-      alert('Failed to submit marks');
+      console.error('Error submitting marks:', error);
+      alert('Failed to submit marks.');
     }
   };
 
@@ -196,8 +202,8 @@ const CAE2 = () => {
               onChange={(e) => setSearchTerm(e.target.value)}
               style={styles.input}
             />
-            <button 
-              type="button" 
+            <button
+              type="button"
               style={styles.button}
               onMouseEnter={() => setButtonHover(true)}
               onMouseLeave={() => setButtonHover(false)}
@@ -229,6 +235,25 @@ const CAE2 = () => {
               ))}
             </tbody>
           </table>
+          <div style={styles.pagination}>
+            <button
+              type="button"
+              style={styles.paginationButton}
+              onClick={() => setCurrentPage(prev => Math.max(prev - 1, 1))}
+              disabled={currentPage === 1}
+            >
+              Previous
+            </button>
+            <span>{`Page ${currentPage} of ${totalPages}`}</span>
+            <button
+              type="button"
+              style={styles.paginationButton}
+              onClick={() => setCurrentPage(prev => Math.min(prev + 1, totalPages))}
+              disabled={currentPage === totalPages}
+            >
+              Next
+            </button>
+          </div>
           <button
             type="submit"
             style={{ ...styles.button, ...(buttonHover ? styles.buttonHover : {}) }}
@@ -237,21 +262,6 @@ const CAE2 = () => {
           >
             SUBMIT
           </button>
-          <div style={styles.pagination}>
-            <button
-              style={styles.paginationButton}
-              onClick={() => setCurrentPage(prev => Math.max(prev - 1, 1))}
-            >
-              Previous
-            </button>
-            <span>{`Page ${currentPage} of ${totalPages}`}</span>
-            <button
-              style={styles.paginationButton}
-              onClick={() => setCurrentPage(prev => Math.min(prev + 1, totalPages))}
-            >
-              Next
-            </button>
-          </div>
         </form>
       )}
     </div>
