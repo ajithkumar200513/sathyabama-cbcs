@@ -14,27 +14,28 @@ const StaffHome = () => {
   const [uploadedImage, setUploadedImage] = useState(null);
   const [searchQuery, setSearchQuery] = useState('');
 
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const response = await fetch(https://sathyabama-cbcs.onrender.com/cbcs/staf/RegStudent/${staff.id}, {
-          headers: { Authorization: Bearer ${staff.token} }
-        });
-        const json = await response.json();
-        if (response.ok) {
-          setData(json);
-        } else {
-          console.error('Error fetching student data:', json);
-        }
-      } catch (error) {
-        console.error('Fetch error:', error);
+useEffect(() => {
+  const fetchData = async () => {
+    try {
+      const response = await fetch(`https://sathyabama-cbcs.onrender.com/cbcs/staf/RegStudent/${staff.id}`, {
+        headers: { Authorization: `Bearer ${staff.token}` }
+      });
+      const json = await response.json();
+      if (response.ok) {
+        setData(json);
+      } else {
+        console.error('Error fetching student data:', json);
       }
-    };
-
-    if (staff) {
-      fetchData();
+    } catch (error) {
+      console.error('Fetch error:', error);
     }
-  }, [staff]);
+  };
+
+  if (staff) {
+    fetchData();
+  }
+}, [staff]);
+
 
   useEffect(() => {
     const handleOrientationChange = () => {
@@ -98,8 +99,8 @@ const StaffHome = () => {
     container: {
       display: 'flex',
       minHeight: '100vh',
-      backgroundColor: uploadedImage ? url(${uploadedImage}) : '#f0f0f0',
-      backgroundImage: url(${defaultBackgroundImage}),
+      backgroundColor: uploadedImage ? `url(${uploadedImage})` : '#f0f0f0',
+      backgroundImage: `url(${defaultBackgroundImage})`,
       backgroundSize: 'cover',
       backgroundPosition: 'center',
       backgroundRepeat: 'no-repeat',
@@ -108,7 +109,7 @@ const StaffHome = () => {
     sideNavbar: {
       flex: '0 0 250px',
       padding: '20px',
-      backgroundColor: '#9e1c3f', // Theme color
+      backgroundColor: '#9e1c3f', // COE theme color from HodNav
       color: '#fff',
       borderRight: '1px solid #ddd',
       display: 'flex',
@@ -132,7 +133,7 @@ const StaffHome = () => {
       width: '100%',
       padding: '10px 20px',
       margin: '10px 0',
-      backgroundColor: '#721022',
+      backgroundColor: '#c2185b', // Lighter shade for buttons from HodNav
       color: '#fff',
       border: 'none',
       borderRadius: '4px',
@@ -140,20 +141,28 @@ const StaffHome = () => {
       textDecoration: 'none',
       cursor: 'pointer',
       fontSize: '16px',
+      transition: 'background-color 0.3s ease',
+    },
+    navButtonHover: {
+      backgroundColor: '#d32f2f', // Hover effect color from HodNav
     },
     activeNavButton: {
-      backgroundColor: '#9e1c3f',
+      backgroundColor: '#d32f2f', // Active button color from HodNav
     },
     logoutButton: {
       marginTop: '20px',
       padding: '10px 20px',
-      backgroundColor: '#721022',
+      backgroundColor: '#c2185b', // Match button color with HodNav
       color: '#fff',
       border: 'none',
       borderRadius: '4px',
       cursor: 'pointer',
       textAlign: 'center',
       width: '84%',
+      transition: 'background-color 0.3s ease',
+    },
+    logoutButtonHover: {
+      backgroundColor: '#d32f2f', // Hover effect color for logout button
     },
     tableContainer: {
       flex: 1,
@@ -178,11 +187,15 @@ const StaffHome = () => {
     },
     searchButton: {
       padding: '10px 20px',
-      backgroundColor: '#721022',
+      backgroundColor: '#c2185b', // Match button color with HodNav
       color: '#fff',
       border: 'none',
       borderRadius: '4px',
       cursor: 'pointer',
+      transition: 'background-color 0.3s ease',
+    },
+    searchButtonHover: {
+      backgroundColor: '#d32f2f', // Hover effect color for search button
     },
     table: {
       width: '100%',
@@ -209,9 +222,13 @@ const StaffHome = () => {
       padding: '10px 20px',
       margin: '0 5px',
       border: 'none',
-      backgroundColor: '#721022',
+      backgroundColor: '#c2185b', // Match button color with HodNav
       color: '#fff',
       cursor: 'pointer',
+      transition: 'background-color 0.3s ease',
+    },
+    paginationButtonHover: {
+      backgroundColor: '#d32f2f', // Hover effect color for pagination buttons
     },
     '@media (max-width: 768px)': {
       container: {
@@ -237,11 +254,13 @@ const StaffHome = () => {
     },
   };
 
+
   return (
     <div style={styles.container}>
       {staff && (
         <div style={styles.sideNavbar}>
           <div style={styles.staffDetails}>
+           
             <p style={styles.info}>{staff.Name}</p>
             <p style={styles.info}>{staff.Email}</p>
           </div>
@@ -286,8 +305,8 @@ const StaffHome = () => {
                   <td style={styles.td}>{student.Email}</td>
                   <td style={styles.td}>{student.Dept}</td>
                   <td style={styles.td}>{student.Course}</td>
-                  <td style={styles.td}>{student.CAE1 ? student.CAE1 : 'N/A'}</td>
-                  <td style={styles.td}>{student.CAE2 ? student.CAE2 : 'N/A'}</td>
+                  <td style={styles.td}>{student.CAE1? student.CAE1 : 'N/A'}</td>
+                  <td style={styles.td}>{student.CAE2? student.CAE2 : 'N/A'}</td>
                   <td style={styles.td}>{student.SEM ? student.SEM : 'N/A'}</td>
                 </tr>
               ))}
@@ -303,3 +322,5 @@ const StaffHome = () => {
     </div>
   );
 };
+
+export default StaffHome;
