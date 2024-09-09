@@ -105,18 +105,18 @@ const styles = {
     backgroundPosition: 'center',
     backgroundRepeat: 'no-repeat',
     fontFamily: 'Arial, sans-serif',
-    flexDirection: 'column',
+    flexDirection: 'row',
+    flexWrap: 'wrap',
   },
   sideNavbar: {
     flex: '0 0 250px',
     padding: '20px',
-    backgroundColor: '#9e1c3f',
+    backgroundColor: '#9e1c3f', // Theme color
     color: '#fff',
     borderRight: '1px solid #ddd',
     display: 'flex',
     flexDirection: 'column',
     alignItems: 'center',
-    minWidth: '200px',
   },
   staffDetails: {
     textAlign: 'center',
@@ -125,19 +125,17 @@ const styles = {
   info: {
     margin: '10px 0',
     fontWeight: 'bold',
-    fontSize: '16px',
   },
   navLinks: {
     display: 'flex',
     flexDirection: 'column',
     alignItems: 'center',
-    width: '100%',
   },
   navButton: {
     width: '100%',
     padding: '10px 20px',
     margin: '10px 0',
-    backgroundColor: '#c2185b',
+    backgroundColor: '#721022',
     color: '#fff',
     border: 'none',
     borderRadius: '4px',
@@ -145,28 +143,30 @@ const styles = {
     textDecoration: 'none',
     cursor: 'pointer',
     fontSize: '16px',
-    transition: 'background-color 0.3s ease',
+    transition: 'background-color 0.3s, transform 0.3s',
   },
   navButtonHover: {
-    backgroundColor: '#d32f2f',
+    backgroundColor: '#9e1c3f', // Hover effect color
+    transform: 'scale(1.05)',
   },
   activeNavButton: {
-    backgroundColor: '#d32f2f',
+    backgroundColor: '#9e1c3f',
   },
   logoutButton: {
     marginTop: '20px',
     padding: '10px 20px',
-    backgroundColor: '#c2185b',
+    backgroundColor: '#721022',
     color: '#fff',
     border: 'none',
     borderRadius: '4px',
     cursor: 'pointer',
     textAlign: 'center',
     width: '84%',
-    transition: 'background-color 0.3s ease',
+    transition: 'background-color 0.3s, transform 0.3s',
   },
   logoutButtonHover: {
-    backgroundColor: '#d32f2f',
+    backgroundColor: '#9e1c3f', // Hover effect color
+    transform: 'scale(1.05)',
   },
   tableContainer: {
     flex: 1,
@@ -178,8 +178,7 @@ const styles = {
   },
   searchContainer: {
     display: 'flex',
-    flexDirection: 'column',
-    alignItems: 'center',
+    justifyContent: 'center',
     marginBottom: '20px',
   },
   searchInput: {
@@ -187,21 +186,19 @@ const styles = {
     fontSize: '16px',
     borderRadius: '4px',
     border: '1px solid #ddd',
-    marginBottom: '10px',
-    width: '100%',
-    maxWidth: '400px',
+    marginRight: '10px',
+    flex: '1',
   },
   searchButton: {
     padding: '10px 20px',
-    backgroundColor: '#c2185b',
+    backgroundColor: '#721022',
     color: '#fff',
     border: 'none',
     borderRadius: '4px',
     cursor: 'pointer',
-    transition: 'background-color 0.3s ease',
   },
   searchButtonHover: {
-    backgroundColor: '#d32f2f',
+    backgroundColor: '#9e1c3f', // Hover effect color
   },
   table: {
     width: '100%',
@@ -213,13 +210,11 @@ const styles = {
     border: '1px solid #ddd',
     backgroundColor: '#f2f2f2',
     textAlign: 'left',
-    fontSize: '14px',
   },
   td: {
     padding: '10px',
     border: '1px solid #ddd',
     textAlign: 'left',
-    fontSize: '14px',
   },
   pagination: {
     display: 'flex',
@@ -230,53 +225,53 @@ const styles = {
     padding: '10px 20px',
     margin: '0 5px',
     border: 'none',
-    backgroundColor: '#c2185b',
+    backgroundColor: '#721022',
     color: '#fff',
     cursor: 'pointer',
-    transition: 'background-color 0.3s ease',
+    transition: 'background-color 0.3s, transform 0.3s',
   },
   paginationButtonHover: {
-    backgroundColor: '#d32f2f',
+    backgroundColor: '#9e1c3f', // Hover effect color
+    transform: 'scale(1.05)',
   },
   '@media (max-width: 768px)': {
     container: {
       flexDirection: 'column',
     },
     sideNavbar: {
+      flex: '0 0 auto',
       width: '100%',
       flexDirection: 'row',
       justifyContent: 'space-between',
       padding: '10px',
       borderRight: 'none',
-      borderBottom: '1px solid #ddd',
+    },
+    staffDetails: {
+      marginBottom: '10px',
     },
     navLinks: {
       flexDirection: 'row',
     },
     navButton: {
       margin: '0 5px',
-      fontSize: '14px',
+      padding: '8px 16px',
     },
     tableContainer: {
       margin: '10px',
       padding: '10px',
     },
-    searchContainer: {
-      flexDirection: 'column',
-      alignItems: 'center',
-    },
     searchInput: {
-      maxWidth: '100%',
+      marginRight: '5px',
     },
     searchButton: {
-      marginTop: '10px',
+      padding: '8px 16px',
     },
-    pagination: {
-      flexDirection: 'column',
+    paginationButton: {
+      padding: '8px 16px',
+      margin: '0 3px',
     },
   },
 };
-
 
 
   return (
