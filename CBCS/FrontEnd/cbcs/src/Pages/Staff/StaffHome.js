@@ -15,29 +15,27 @@ const StaffHome = () => {
   const [searchQuery, setSearchQuery] = useState('');
 
   useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const response = await fetch(
-          `https://sathyabama-cbcs.onrender.com/cbcs/staf/RegStudent/${staff.id}`, 
-          {
-            headers: { Authorization: `Bearer ${staff.token}` }
-          }
-        );
-        const json = await response.json();
-        if (response.ok) {
-          setData(json);
-        } else {
-          console.error('Error fetching student data:', json);
-        }
-      } catch (error) {
-        console.error('Fetch error:', error);
+  const fetchData = async () => {
+    try {
+      const response = await fetch(`https://sathyabama-cbcs.onrender.com/cbcs/staf/RegStudent/${staff.id}`, {
+        headers: { Authorization: `Bearer ${staff.token}` }
+      });
+      const json = await response.json();
+      if (response.ok) {
+        setData(json);
+      } else {
+        console.error('Error fetching student data:', json);
       }
-    };
-
-    if (staff) {
-      fetchData();
+    } catch (error) {
+      console.error('Fetch error:', error);
     }
-  }, [staff]);
+  };
+
+  if (staff) {
+    fetchData();
+  }
+}, [staff]);
+
 
   useEffect(() => {
     const handleOrientationChange = () => {
