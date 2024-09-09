@@ -95,7 +95,7 @@ useEffect(() => {
 
   const paginate = (pageNumber) => setCurrentPage(pageNumber);
 
-  const styles = {
+const styles = {
   container: {
     display: 'flex',
     minHeight: '100vh',
@@ -105,16 +105,18 @@ useEffect(() => {
     backgroundPosition: 'center',
     backgroundRepeat: 'no-repeat',
     fontFamily: 'Arial, sans-serif',
+    flexDirection: 'column',
   },
   sideNavbar: {
     flex: '0 0 250px',
     padding: '20px',
-    backgroundColor: '#9e1c3f', // COE theme color from HodNav
+    backgroundColor: '#9e1c3f',
     color: '#fff',
     borderRight: '1px solid #ddd',
     display: 'flex',
     flexDirection: 'column',
     alignItems: 'center',
+    minWidth: '200px',
   },
   staffDetails: {
     textAlign: 'center',
@@ -123,17 +125,19 @@ useEffect(() => {
   info: {
     margin: '10px 0',
     fontWeight: 'bold',
+    fontSize: '16px',
   },
   navLinks: {
     display: 'flex',
     flexDirection: 'column',
     alignItems: 'center',
+    width: '100%',
   },
   navButton: {
     width: '100%',
     padding: '10px 20px',
     margin: '10px 0',
-    backgroundColor: '#c2185b', // Lighter shade for buttons from HodNav
+    backgroundColor: '#c2185b',
     color: '#fff',
     border: 'none',
     borderRadius: '4px',
@@ -144,15 +148,15 @@ useEffect(() => {
     transition: 'background-color 0.3s ease',
   },
   navButtonHover: {
-    backgroundColor: '#d32f2f', // Hover effect color from HodNav
+    backgroundColor: '#d32f2f',
   },
   activeNavButton: {
-    backgroundColor: '#d32f2f', // Active button color from HodNav
+    backgroundColor: '#d32f2f',
   },
   logoutButton: {
     marginTop: '20px',
     padding: '10px 20px',
-    backgroundColor: '#c2185b', // Match button color with HodNav
+    backgroundColor: '#c2185b',
     color: '#fff',
     border: 'none',
     borderRadius: '4px',
@@ -162,7 +166,7 @@ useEffect(() => {
     transition: 'background-color 0.3s ease',
   },
   logoutButtonHover: {
-    backgroundColor: '#d32f2f', // Hover effect color for logout button
+    backgroundColor: '#d32f2f',
   },
   tableContainer: {
     flex: 1,
@@ -174,7 +178,8 @@ useEffect(() => {
   },
   searchContainer: {
     display: 'flex',
-    justifyContent: 'center',
+    flexDirection: 'column',
+    alignItems: 'center',
     marginBottom: '20px',
   },
   searchInput: {
@@ -182,12 +187,13 @@ useEffect(() => {
     fontSize: '16px',
     borderRadius: '4px',
     border: '1px solid #ddd',
-    marginRight: '10px',
-    flex: '1',
+    marginBottom: '10px',
+    width: '100%',
+    maxWidth: '400px',
   },
   searchButton: {
     padding: '10px 20px',
-    backgroundColor: '#c2185b', // Match button color with HodNav
+    backgroundColor: '#c2185b',
     color: '#fff',
     border: 'none',
     borderRadius: '4px',
@@ -195,7 +201,7 @@ useEffect(() => {
     transition: 'background-color 0.3s ease',
   },
   searchButtonHover: {
-    backgroundColor: '#d32f2f', // Hover effect color for search button
+    backgroundColor: '#d32f2f',
   },
   table: {
     width: '100%',
@@ -207,11 +213,13 @@ useEffect(() => {
     border: '1px solid #ddd',
     backgroundColor: '#f2f2f2',
     textAlign: 'left',
+    fontSize: '14px',
   },
   td: {
     padding: '10px',
     border: '1px solid #ddd',
     textAlign: 'left',
+    fontSize: '14px',
   },
   pagination: {
     display: 'flex',
@@ -222,34 +230,49 @@ useEffect(() => {
     padding: '10px 20px',
     margin: '0 5px',
     border: 'none',
-    backgroundColor: '#c2185b', // Match button color with HodNav
+    backgroundColor: '#c2185b',
     color: '#fff',
     cursor: 'pointer',
     transition: 'background-color 0.3s ease',
   },
   paginationButtonHover: {
-    backgroundColor: '#d32f2f', // Hover effect color for pagination buttons
+    backgroundColor: '#d32f2f',
   },
   '@media (max-width: 768px)': {
     container: {
       flexDirection: 'column',
     },
     sideNavbar: {
-      flex: '0 0 auto',
       width: '100%',
       flexDirection: 'row',
       justifyContent: 'space-between',
       padding: '10px',
+      borderRight: 'none',
+      borderBottom: '1px solid #ddd',
     },
     navLinks: {
       flexDirection: 'row',
     },
     navButton: {
-      margin: '0 10px',
+      margin: '0 5px',
+      fontSize: '14px',
     },
     tableContainer: {
       margin: '10px',
       padding: '10px',
+    },
+    searchContainer: {
+      flexDirection: 'column',
+      alignItems: 'center',
+    },
+    searchInput: {
+      maxWidth: '100%',
+    },
+    searchButton: {
+      marginTop: '10px',
+    },
+    pagination: {
+      flexDirection: 'column',
     },
   },
 };
