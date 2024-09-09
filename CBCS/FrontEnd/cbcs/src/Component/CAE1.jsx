@@ -6,7 +6,7 @@ const CAE1 = () => {
   const [Data, setData] = useState([]);
   const { staff } = useStaffAuthContext();
   const [loading, setLoading] = useState(true);
-  const [Marks, setMarks] = useState(null);
+  const [Marks, setMarks] = useState({});
   const [searchTerm, setSearchTerm] = useState('');
 
   // Pagination state
@@ -114,15 +114,17 @@ const CAE1 = () => {
   useEffect(() => {
     const fetchdata = async () => {
       try {
-        const response = await fetch('https://sathyabama-cbcs.onrender.com/cbcs/staf/Attendence/' + staff.course_id, {
+        const response = await fetch(`https://sathyabama-cbcs.onrender.com/cbcs/staf/Attendence/${staff.course_id}`, {
           headers: { 'Authorization': `Bearer ${staff.token}` }
         });
-        const json = await response.json();
         if (response.ok) {
+          const json = await response.json();
           setData(json);
+        } else {
+          console.error('Failed to fetch data:', response.statusText);
         }
       } catch (error) {
-        console.error();
+        console.error('Error fetching data:', error);
       } finally {
         setLoading(false);
       }
@@ -134,18 +136,9 @@ const CAE1 = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const info = { CAE1: true, CAE2: false, SEM: false };
-    const response = await fetch('https://sathyabama-cbcs.onrender.com/cbcs/staf/Marks/given/staffinfo/' + staff.id, {
-      method: 'POST',
-      body: JSON.stringify(info),
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${staff.token}`
-      }
-    });
-    Object.entries(Marks).map(async ([studentId, marks]) => {
-      const info = { Marks: marks };
-      const response = await fetch('https://sathyabama-cbcs.onrender.com/cbcs/staf/Marks/given/CAE1/' + studentId, {
+    try {
+      const info = { CAE1: true, CAE2: false, SEM: false };
+      const response = await fetch(`https://sathyabama-cbcs.onrender.com/cbcs/staf/Marks/given/staffinfo/${staff.id}`, {
         method: 'POST',
         body: JSON.stringify(info),
         headers: {
@@ -153,9 +146,34 @@ const CAE1 = () => {
           'Authorization': `Bearer ${staff.token}`
         }
       });
-    });
-    if (response.ok) {
-      window.location.reload();
+      if (!response.ok) {
+        console.error('Failed to submit staff info:', response.statusText);
+        return;
+      }
+
+      await Promise.all(
+        Object.entries(Marks).map(async ([studentId, marks]) => {
+          const response = await fetch(`https://sathyabama-cbcs.onrender.com/cbcs/staf/Marks/given/CAE1/${studentId}`, {
+            method: 'POST',
+            body: JSON.stringify({ Marks: marks }),
+            headers: {
+              'Content-Type': 'application/json',
+              'Authorization': `Bearer ${staff.token}`
+            }
+          });
+          if (!response.ok) {
+            console.error(`Failed to submit marks for student ${studentId}:`, response.statusText);
+          }
+        })
+      );
+
+      // Update state to reflect changes instead of reloading
+      setMarks({});
+
+      alert('Marks submitted successfully.');
+    } catch (error) {
+      console.error('Error submitting marks:', error);
+      alert('Failed to submit marks.');
     }
   };
 
@@ -186,7 +204,7 @@ const CAE1 = () => {
     <div style={styles.container}>
       <h2 style={styles.heading}>CAE-1</h2>
       {staff.CAE1 ? <h1>Marks Already Given</h1> : (
-        <form style={styles.form}>
+        <form style={styles.form} onSubmit={handleSubmit}>
           <div style={styles.searchContainer}>
             <input
               type="text"
@@ -246,7 +264,7 @@ const CAE1 = () => {
             </button>
           </div>
           <button
-            onClick={(e) => handleSubmit(e)}
+            type="submit"
             style={{ ...styles.button, ...(buttonHover ? styles.buttonHover : {}) }}
             onMouseEnter={() => setButtonHover(true)}
             onMouseLeave={() => setButtonHover(false)}
