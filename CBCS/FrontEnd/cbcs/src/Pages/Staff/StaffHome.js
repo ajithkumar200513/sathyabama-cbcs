@@ -14,7 +14,7 @@ const StaffHome = () => {
   const [uploadedImage, setUploadedImage] = useState(null);
   const [searchQuery, setSearchQuery] = useState('');
 
-  useEffect(() => {
+ useEffect(() => {
   const fetchData = async () => {
     try {
       const response = await fetch(`https://sathyabama-cbcs.onrender.com/cbcs/staf/RegStudent/${staff.id}`, {
@@ -35,7 +35,6 @@ const StaffHome = () => {
     fetchData();
   }
 }, [staff]);
-
 
   useEffect(() => {
     const handleOrientationChange = () => {
@@ -120,6 +119,11 @@ const StaffHome = () => {
       textAlign: 'center',
       marginBottom: '20px',
     },
+   
+   
+   
+   
+    
     info: {
       margin: '10px 0',
       fontWeight: 'bold',
@@ -214,6 +218,7 @@ const StaffHome = () => {
       color: '#fff',
       cursor: 'pointer',
     },
+   
     '@media (max-width: 768px)': {
       container: {
         flexDirection: 'column',
@@ -243,6 +248,7 @@ const StaffHome = () => {
       {staff && (
         <div style={styles.sideNavbar}>
           <div style={styles.staffDetails}>
+           
             <p style={styles.info}>{staff.Name}</p>
             <p style={styles.info}>{staff.Email}</p>
           </div>
@@ -274,6 +280,9 @@ const StaffHome = () => {
                 <th style={styles.th}>Email</th>
                 <th style={styles.th}>DEPT</th>
                 <th style={styles.th}>Course</th>
+                <th style={styles.th}>CAE-1</th>
+                <th style={styles.th}>CAE-2</th>
+                <th style={styles.th}>SEM</th>
               </tr>
             </thead>
             <tbody>
@@ -282,21 +291,18 @@ const StaffHome = () => {
                   <td style={styles.td}>{student.Name}</td>
                   <td style={styles.td}>{student.RegNo}</td>
                   <td style={styles.td}>{student.Email}</td>
-                  <td style={styles.td}>{student.DEPT}</td>
+                  <td style={styles.td}>{student.Dept}</td>
                   <td style={styles.td}>{student.Course}</td>
+                  <td style={styles.td}>{student.CAE1? student.CAE1 : 'N/A'}</td>
+                  <td style={styles.td}>{student.CAE2? student.CAE2 : 'N/A'}</td>
+                  <td style={styles.td}>{student.SEM ? student.SEM : 'N/A'}</td>
                 </tr>
               ))}
             </tbody>
           </table>
           <div style={styles.pagination}>
             {Array.from({ length: Math.ceil(filteredData.length / studentsPerPage) }, (_, index) => (
-              <button
-                key={index}
-                onClick={() => paginate(index + 1)}
-                style={styles.paginationButton}
-              >
-                {index + 1}
-              </button>
+              <button key={index + 1} onClick={() => paginate(index + 1)} style={styles.paginationButton}>{index + 1}</button>
             ))}
           </div>
         </div>
