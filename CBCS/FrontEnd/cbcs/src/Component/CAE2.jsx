@@ -1,12 +1,12 @@
-import React, { useEffect, useState } from 'react'
-import { useStaffAuthContext } from '../Hooks/useStaffAuthContext'
+import React, { useEffect, useState } from 'react';
+import { useStaffAuthContext } from '../Hooks/useStaffAuthContext';
 import backgroundImage from '../css/logo.png'; // Ensure this path is correct
 
 const CAE2 = () => {
-  const [Data, setData] = useState([])
+  const [Data, setData] = useState([]);
   const { staff } = useStaffAuthContext();
-  const [loading, setLoading] = useState(true)
-  const [Marks, setMarks] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [Marks, setMarks] = useState({}); // Initialized as an empty object
   const [searchTerm, setSearchTerm] = useState('');
 
   // Pagination state
@@ -111,56 +111,68 @@ const CAE2 = () => {
       try {
         const response = await fetch('https://sathyabama-cbcs.onrender.com/cbcs/staf/Attendence/' + staff.course_id, {
           headers: { 'Authorization': `Bearer ${staff.token}` }
-        })
-        const json = await response.json()
+        });
+        const json = await response.json();
         if (response.ok) {
-          setData(json)
+          setData(json);
         }
       } catch (error) {
-        console.error();
+        console.error(error);
       } finally {
-        setLoading(false)
+        setLoading(false);
       }
-    }
+    };
     if (staff) {
-      fetchdata()
+      fetchdata();
     }
   }, [staff]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const info = { CAE1: true, CAE2: true, SEM: false }
-    const response = await fetch('https://sathyabama-cbcs.onrender.com/cbcs/staf/Marks/given/staffinfo/' + staff.id, {
-      method: 'POST',
-      body: JSON.stringify(info),
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization':`Bearer ${staff.token}`
-      }  
+    try {
+      const info = { CAE1: true, CAE2: true, SEM: false };
+      const response = await fetch('https://sathyabama-cbcs.onrender.com/cbcs/staf/Marks/given/staffinfo/' + staff.id, {
+        method: 'POST',
+        body: JSON.stringify(info),
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${staff.token}`
+        }
+      });
+
+      if (!response.ok) throw new Error('Failed to submit staff info');
+
+      await Promise.all(
+        Object.entries(Marks).map(async ([studentId, marks]) => {
+          const info = { Marks: marks };
+          const response = await fetch('https://sathyabama-cbcs.onrender.com/cbcs/staf/Marks/given/CAE2/' + studentId, {
+            method: 'POST',
+            body: JSON.stringify(info),
+            headers: {
+              'Content-Type': 'application/json',
+              'Authorization': `Bearer ${staff.token}`
+            }
+          });
+          if (!response.ok) throw new Error('Failed to submit marks for student ' + studentId);
+        })
+      );
+
+      // Provide user feedback and update state instead of reloading
+      alert('Marks submitted successfully');
+      setData([]);
+      setMarks({});
+    } catch (error) {
+      console.error(error);
+      alert('Failed to submit marks');
     }
-    )
-    Object.entries(Marks).map(async([studentId, marks]) =>{
-      const info = {Marks:marks}
-      const response = await fetch('https://sathyabama-cbcs.onrender.com/cbcs/staf/Marks/given/CAE2/'+studentId, {
-      method: 'POST',
-      body: JSON.stringify(info),
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization':`Bearer ${staff.token}`
-      }
-    })
-    })
-    if(response.ok)
-    {window.location.reload()}
-    
-  }
+  };
 
   if (loading) {
     return <p>Loading...</p>;
   }
 
   // Filtered data based on search term
-  const filteredData = Data.filter(student => 
+  const filteredData = Data.filter(student =>
     student.Name.toLowerCase().includes(searchTerm.toLowerCase()) ||
     student.RegNo.toLowerCase().includes(searchTerm.toLowerCase())
   );
@@ -175,7 +187,7 @@ const CAE2 = () => {
     <div style={styles.container}>
       <h2 style={styles.heading}>CAE-2</h2>
       {staff.CAE2 ? <h1>Marks Already Given</h1> : (
-        <form style={styles.form}>
+        <form style={styles.form} onSubmit={handleSubmit}>
           <div style={styles.searchContainer}>
             <input
               type="text"
@@ -218,7 +230,7 @@ const CAE2 = () => {
             </tbody>
           </table>
           <button
-            onClick={(e) => handleSubmit(e)}
+            type="submit"
             style={{ ...styles.button, ...(buttonHover ? styles.buttonHover : {}) }}
             onMouseEnter={() => setButtonHover(true)}
             onMouseLeave={() => setButtonHover(false)}
@@ -243,7 +255,7 @@ const CAE2 = () => {
         </form>
       )}
     </div>
-  )
-}
+  );
+};
 
-export default CAE2
+export default CAE2;
