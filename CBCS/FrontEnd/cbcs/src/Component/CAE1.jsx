@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useStaffAuthContext } from '../Hooks/useStaffAuthContext';
 import backgroundImage from '../css/logo.png'; // Ensure this path is correct
 
-const CAE2 = () => {
+const CAE1 = () => {
   const [Data, setData] = useState([]);
   const { staff } = useStaffAuthContext();
   const [loading, setLoading] = useState(true);
@@ -136,7 +136,7 @@ const CAE2 = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const info = { CAE1: true, CAE2: true, SEM: false };
+      const info = { CAE1: true, CAE2: false, SEM: false };
       const response = await fetch(`https://sathyabama-cbcs.onrender.com/cbcs/staf/Marks/given/staffinfo/${staff.id}`, {
         method: 'POST',
         body: JSON.stringify(info),
@@ -152,7 +152,7 @@ const CAE2 = () => {
 
       await Promise.all(
         Object.entries(Marks).map(async ([studentId, marks]) => {
-          const response = await fetch(`https://sathyabama-cbcs.onrender.com/cbcs/staf/Marks/given/CAE2/${studentId}`, {
+          const response = await fetch(`https://sathyabama-cbcs.onrender.com/cbcs/staf/Marks/given/CAE1/${studentId}`, {
             method: 'POST',
             body: JSON.stringify({ Marks: marks }),
             headers: {
@@ -186,13 +186,12 @@ const CAE2 = () => {
   const indexOfLastItem = currentPage * itemsPerPage;
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
   const currentItems = filteredData.slice(indexOfFirstItem, indexOfLastItem);
-  const total
   const totalPages = Math.ceil(filteredData.length / itemsPerPage);
 
   return (
     <div style={styles.container}>
-      <h2 style={styles.heading}>CAE-2</h2>
-      {staff.CAE2 ? (
+      <h2 style={styles.heading}>CAE-1</h2>
+      {staff.CAE1 ? (
         <h1>Marks Already Given</h1>
       ) : (
         <form style={styles.form} onSubmit={handleSubmit}>
@@ -276,4 +275,4 @@ const CAE2 = () => {
   );
 };
 
-export default CAE2;
+export default CAE1;
