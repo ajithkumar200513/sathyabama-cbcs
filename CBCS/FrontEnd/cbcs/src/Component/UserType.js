@@ -24,7 +24,8 @@ const UserType = () => {
       <div className='middle-content'>
         <h1 className='welcome-heading'>Welcome to Sathyabama Institute of Science and Technology (CBCS)</h1>
         <p className='welcome-paragraph'>
-          Sathyabama Institute of Science and Technology (SIST) is a renowned institution known for its excellence in education and research. Our institution operates under the Choice Based Credit System (CBCS), which allows students to tailor their education according to their interests and career goals. The CBCS provides flexibility in course selection, enabling students to choose from a wide range of subjects and interdisciplinary courses. 
+          Sathyabama Institute of Science and Technology (SIST) is a renowned institution known for its excellence in education and research. Our institution operates under the Choice Based Credit System (CBCS), which allows students to tailor their education according to their interests and career goals. The CBCS provides flexibility in course selection, enabling students to choose from a wide range of subjects and interdisciplinary courses.
+        </p>
       </div>
       <footer className='footer'>
         <a href='https://www.linkedin.com/school/sathyabama-institute-of-science-&-technology-chennai/' target='_blank' rel='noopener noreferrer' className='footer-link'>
