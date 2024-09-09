@@ -87,7 +87,7 @@ const AttendanceSheet = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     const Date = { "Date": formattedDate.toString(), "Id": staff.id };
-    const response = await fetch('http://localhost:4000/cbcs/staf/Attendence/Given', {
+    const response = await fetch('https://sathyabama-cbcs.onrender.com/cbcs/staf/Attendence/Given', {
       method: 'POST',
       body: JSON.stringify(Date),
       headers: {
@@ -98,7 +98,7 @@ const AttendanceSheet = () => {
 
     Object.entries(attendance).map(async ([studentId, isPresent]) => {
       const course = { "Date": formattedDate.toString(), present: isPresent, Id: staff.id };
-      const response = await fetch('http://localhost:4000/cbcs/staf/Attendence/Given/' + studentId, {
+      const response = await fetch('https://sathyabama-cbcs.onrender.com/cbcs/staf/Attendence/Given/' + studentId, {
         method: 'POST',
         body: JSON.stringify(course),
         headers: {
@@ -110,7 +110,7 @@ const AttendanceSheet = () => {
 
     Object.entries(attendance).map(async ([studentId, isPresent]) => {
       const course = { "Date": formattedDate.toString(), present: isPresent, Id: staff.id };
-      const response1 = await fetch('http://localhost:4000/cbcs/staf/Attendence/student/given/' + studentId, {
+      const response1 = await fetch('https://sathyabama-cbcs.onrender.com/cbcs/staf/Attendence/student/given/' + studentId, {
         method: 'POST',
         body: JSON.stringify(course),
         headers: {
