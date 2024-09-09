@@ -30,7 +30,7 @@ app.use((req, res, next) => {
     next()
   })
   PORT = 4000
- mongoose.connect("sathyabama-cbcs-shard-00-02.ue7lv.mongodb.net:27017")
+ mongoose.connect("mongodb+srv://ajithkumar200513:AJITH200536@ak@sathyabama-cbcs.ue7lv.mongodb.net/")
  .then(() => {
     console.log('connected to database')
     app.listen(PORT, () => {
