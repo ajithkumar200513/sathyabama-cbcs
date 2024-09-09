@@ -17,14 +17,17 @@ const StaffHome = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await fetch(`https://sathyabama-cbcs.onrender.com/cbcs/staf/RegStudent/${staff.id}`, {
-          headers: { Authorization: `Bearer ${staff.token}` }
-        });
+        const response = await fetch(
+          `https://sathyabama-cbcs.onrender.com/cbcs/staf/RegStudent/${staff.id}`, 
+          {
+            headers: { Authorization: `Bearer ${staff.token}` }
+          }
+        );
         const json = await response.json();
         if (response.ok) {
           setData(json);
         } else {
-          console.error('Error fetching data:', json);
+          console.error('Error fetching student data:', json);
         }
       } catch (error) {
         console.error('Fetch error:', error);
@@ -76,9 +79,6 @@ const StaffHome = () => {
     setSearchQuery(event.target.value);
   };
 
-  // Log the fetched data for debugging purposes
-  console.log('Fetched Data:', data);
-
   // Filter data based on the search query
   const filteredData = data.flatMap(course =>
     course.RegStudents.filter(student =>
@@ -89,8 +89,6 @@ const StaffHome = () => {
       Course: course.CourseName // Add the course name to each student
     }))
   );
-
-  console.log('Filtered Data:', filteredData);
 
   // Paginate the filtered data
   const indexOfLastStudent = currentPage * studentsPerPage;
@@ -258,7 +256,7 @@ const StaffHome = () => {
           <button onClick={handleLogout} style={styles.logoutButton}>LOG OUT</button>
         </div>
       )}
-      {data && data.length > 0 ? (
+      {data.length > 0 && (
         <div style={styles.tableContainer}>
           <div style={styles.searchContainer}>
             <input
@@ -275,6 +273,8 @@ const StaffHome = () => {
               <tr>
                 <th style={styles.th}>Name</th>
                 <th style={styles.th}>RegNo</th>
+                <th style={styles.th}>Email</th>
+                <th style={styles.th}>DEPT</th>
                 <th style={styles.th}>Course</th>
               </tr>
             </thead>
@@ -283,25 +283,25 @@ const StaffHome = () => {
                 <tr key={index}>
                   <td style={styles.td}>{student.Name}</td>
                   <td style={styles.td}>{student.RegNo}</td>
+                  <td style={styles.td}>{student.Email}</td>
+                  <td style={styles.td}>{student.DEPT}</td>
                   <td style={styles.td}>{student.Course}</td>
                 </tr>
               ))}
             </tbody>
           </table>
           <div style={styles.pagination}>
-            {Array.from({ length: Math.ceil(filteredData.length / studentsPerPage) }, (_, i) => (
+            {Array.from({ length: Math.ceil(filteredData.length / studentsPerPage) }, (_, index) => (
               <button
-                key={i}
-                onClick={() => paginate(i + 1)}
+                key={index}
+                onClick={() => paginate(index + 1)}
                 style={styles.paginationButton}
               >
-                {i + 1}
+                {index + 1}
               </button>
             ))}
           </div>
         </div>
-      ) : (
-        <p>No student data available.</p>
       )}
     </div>
   );
