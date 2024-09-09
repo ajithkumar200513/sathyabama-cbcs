@@ -1,17 +1,17 @@
-import React, { useEffect, useState } from 'react'
-import { useStaffAuthContext } from '../Hooks/useStaffAuthContext'
+import React, { useEffect, useState } from 'react';
+import { useStaffAuthContext } from '../Hooks/useStaffAuthContext';
 import backgroundImage from '../css/logo.png'; // Ensure this path is correct
 
 const SEM = () => {
-  const [Data, setData] = useState([])
+  const [Data, setData] = useState([]);
   const { staff } = useStaffAuthContext();
-  const [loading, setLoading] = useState(true)
-  const [Marks, setMarks] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [Marks, setMarks] = useState({}); // Initialize as an empty object
   const [searchTerm, setSearchTerm] = useState('');
 
   // Pagination state
   const [currentPage, setCurrentPage] = useState(1);
-  const itemsPerPage = 10; // Number of items per page
+  const itemsPerPage = 10;
 
   const styles = {
     container: {
@@ -95,6 +95,10 @@ const SEM = () => {
       margin: '0 5px',
       transition: 'background-color 0.3s',
     },
+    paginationButtonDisabled: {
+      backgroundColor: '#ccc',
+      cursor: 'not-allowed',
+    },
   };
 
   const [buttonHover, setButtonHover] = useState(false);
@@ -107,56 +111,76 @@ const SEM = () => {
   };
 
   useEffect(() => {
-    const fetchdata = async () => {
+    const fetchData = async () => {
       try {
-        const response = await fetch('https://sathyabama-cbcs.onrender.com/cbcs/staf/Attendence/' + staff.course_id, {
+        const response = await fetch(`https://sathyabama-cbcs.onrender.com/cbcs/staf/Attendence/${staff.course_id}`, {
           headers: { 'Authorization': `Bearer ${staff.token}` }
-        })
-        const json = await response.json()
+        });
         if (response.ok) {
-          setData(json)
+          const json = await response.json();
+          setData(json);
+        } else {
+          console.error('Failed to fetch data:', response.statusText);
         }
       } catch (error) {
-        console.error();
+        console.error('Error fetching data:', error);
       } finally {
-        setLoading(false)
+        setLoading(false);
       }
-    }
+    };
     if (staff) {
-      fetchdata()
+      fetchData();
     }
   }, [staff]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const info = { CAE1: true, CAE2: true, SEM: true }
-    const response = await fetch('https://sathyabama-cbcs.onrender.com/cbcs/staf/Marks/given/staffinfo/' + staff.id, {
-      method: 'POST',
-      body: JSON.stringify(info),
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization':`Bearer ${staff.token}`
-      }  
-    })
-    Object.entries(Marks).map(async([studentId, marks]) =>{
-      const info = {Marks:marks}
-      const response = await fetch('https://sathyabama-cbcs.onrender.com/cbcs/staf/Marks/given/SEM/'+studentId, {
-      method: 'POST',
-      body: JSON.stringify(info),
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization':`Bearer ${staff.token}`
+    try {
+      const info = { CAE1: true, CAE2: true, SEM: true };
+      const response = await fetch(`https://sathyabama-cbcs.onrender.com/cbcs/staf/Marks/given/staffinfo/${staff.id}`, {
+        method: 'POST',
+        body: JSON.stringify(info),
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${staff.token}`
+        }
+      });
+      if (!response.ok) {
+        console.error('Failed to submit staff info:', response.statusText);
+        return;
       }
-    })
-    })
-    if(response.ok) { window.location.reload() }
-  }
+
+      await Promise.all(
+        Object.entries(Marks).map(async ([studentId, marks]) => {
+          const info = { Marks: marks };
+          const response = await fetch(`https://sathyabama-cbcs.onrender.com/cbcs/staf/Marks/given/SEM/${studentId}`, {
+            method: 'POST',
+            body: JSON.stringify(info),
+            headers: {
+              'Content-Type': 'application/json',
+              'Authorization': `Bearer ${staff.token}`
+            }
+          });
+          if (!response.ok) {
+            console.error(`Failed to submit marks for student ${studentId}:`, response.statusText);
+          }
+        })
+      );
+
+      // Update state to reflect changes instead of reloading
+      setMarks({});
+      alert('Marks submitted successfully.');
+    } catch (error) {
+      console.error('Error submitting marks:', error);
+      alert('Failed to submit marks.');
+    }
+  };
 
   if (loading) {
     return <p>Loading...</p>;
   }
 
-  const filteredData = Data.filter(student => 
+  const filteredData = Data.filter(student =>
     student.Name.toLowerCase().includes(searchTerm.toLowerCase()) ||
     student.RegNo.toLowerCase().includes(searchTerm.toLowerCase())
   );
@@ -171,7 +195,7 @@ const SEM = () => {
     <div style={styles.container}>
       <h2 style={styles.heading}>SEM</h2>
       {staff.SEM ? <h1>Marks Already Given</h1> : (
-        <form style={styles.form}>
+        <form style={styles.form} onSubmit={handleSubmit}>
           <div style={styles.searchContainer}>
             <input
               type="text"
@@ -180,8 +204,8 @@ const SEM = () => {
               onChange={(e) => setSearchTerm(e.target.value)}
               style={styles.input}
             />
-            <button 
-              type="button" 
+            <button
+              type="button"
               style={styles.button}
               onMouseEnter={() => setButtonHover(true)}
               onMouseLeave={() => setButtonHover(false)}
@@ -213,17 +237,9 @@ const SEM = () => {
               ))}
             </tbody>
           </table>
-          <button
-            onClick={(e) => handleSubmit(e)}
-            style={{ ...styles.button, ...(buttonHover ? styles.buttonHover : {}) }}
-            onMouseEnter={() => setButtonHover(true)}
-            onMouseLeave={() => setButtonHover(false)}
-          >
-            SUBMIT
-          </button>
           <div style={styles.pagination}>
             <button
-              style={styles.paginationButton}
+              style={{ ...styles.paginationButton, ...(currentPage === 1 ? styles.paginationButtonDisabled : {}) }}
               onClick={() => setCurrentPage(prev => Math.max(prev - 1, 1))}
               disabled={currentPage === 1}
             >
@@ -231,17 +247,25 @@ const SEM = () => {
             </button>
             <span>{`Page ${currentPage} of ${totalPages}`}</span>
             <button
-              style={styles.paginationButton}
+              style={{ ...styles.paginationButton, ...(currentPage === totalPages ? styles.paginationButtonDisabled : {}) }}
               onClick={() => setCurrentPage(prev => Math.min(prev + 1, totalPages))}
               disabled={currentPage === totalPages}
             >
               Next
             </button>
           </div>
+          <button
+            type="submit"
+            style={{ ...styles.button, ...(buttonHover ? styles.buttonHover : {}) }}
+            onMouseEnter={() => setButtonHover(true)}
+            onMouseLeave={() => setButtonHover(false)}
+          >
+            SUBMIT
+          </button>
         </form>
       )}
     </div>
-  )
-}
+  );
+};
 
-export default SEM
+export default SEM;
