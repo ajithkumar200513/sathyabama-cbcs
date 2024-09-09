@@ -30,16 +30,13 @@ app.use((req, res, next) => {
     next()
   })
   PORT = 4000
-mongoose.connect("mongoose.connect("mongoose.connect("mongodb+srv://ajithkumar200513:AJITH200536%40ak@sathyabama-cbcs.ue7lv.mongodb.net/myDatabase?retryWrites=true&w=majority")
-")
-")
-
- .then(() => {
-    console.log('connected to database')
+mongoose.connect("mongodb+srv://ajithkumar200513:AJITH200536%40ak@sathyabama-cbcs.ue7lv.mongodb.net/myDatabase?retryWrites=true&w=majority")
+  .then(() => {
+    console.log('connected to database');
     app.listen(PORT, () => {
-      console.log('listening for requests on port', PORT)
-    })
+      console.log('listening for requests on port', PORT);
+    });
   })
   .catch((err) => {
-    console.log(err)
-  }) 
+    console.log(err);
+  });
