@@ -16,7 +16,8 @@ const StaffHome = () => {
 
   useEffect(() => {
     const fetchData = async () => {
-      const response = await fetch(`http://localhost:4000/cbcs/staf/RegStudent/${staff.id}`, {
+      const response = await fetch(`https://sathyabama-cbcs.onrender.com
+        /cbcs/staf/RegStudent/${staff.id}`, {
         headers: { Authorization: `Bearer ${staff.token}` }
       });
       const json = await response.json();

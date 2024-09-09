@@ -12,7 +12,7 @@ const DeanTable = ({ Dept }) => {
     useEffect(() => {
         async function fetchData() {
             try {
-                const response = await fetch(`http://localhost:4000/cbcs/Dean/getstudinfo`, {
+                const response = await fetch(`https://sathyabama-cbcs.onrender.com/cbcs/Dean/getstudinfo`, {
                     method: 'POST',
                     body: JSON.stringify({ Dept }),
                     headers: {

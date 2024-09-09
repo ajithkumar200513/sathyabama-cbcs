@@ -15,7 +15,7 @@ const Course = () => {
 
     useEffect(() => {
         const fetchCourse = async () => {
-            const response = await fetch('http://localhost:4000/cbcs/course/', {
+            const response = await fetch('https://sathyabama-cbcs.onrender.com/cbcs/course/', {
                 headers: { 'Authorization': `Bearer ${user.token}` }
             });
             const json = await response.json();

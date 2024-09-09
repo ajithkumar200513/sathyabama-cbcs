@@ -70,7 +70,7 @@ const HodTable = () => {
 
   const handleClick = async (e, user) => {
     e.preventDefault();
-    const response = await fetch(`http://localhost:4000/cbcs/hod/RegStudent/${user._id}`, {
+    const response = await fetch(`https://sathyabama-cbcs.onrender.com/cbcs/hod/RegStudent/${user._id}`, {
       headers: { 'Authorization': `Bearer ${HOD.token}` },
     });
     const json = await response.json();
@@ -82,7 +82,7 @@ const HodTable = () => {
   };
 
   const handleDelete = async (e, user) => {
-    const response = await fetch(`http://localhost:4000/cbcs/hod/delete/${user._id}`, {
+    const response = await fetch(`https://sathyabama-cbcs.onrender.com/cbcs/hod/delete/${user._id}`, {
       method: 'DELETE',
       headers: { 'Authorization': `Bearer ${HOD.token}` },
     });

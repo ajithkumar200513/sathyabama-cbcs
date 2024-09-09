@@ -9,7 +9,7 @@ const signup = async(Name,Email,Batch,Dept,RegNo,password) =>
 {
     setisLoading(true)
     setError(null) 
-    const response = await fetch('http://localhost:4000/cbcs/user/signup',{
+    const response = await fetch('https://sathyabama-cbcs.onrender.com/cbcs/user/signup',{
         method:'POST',
         headers:{'Content-Type':'application/json'},
         body:JSON.stringify({Name,Email,Batch,Dept,RegNo,password})

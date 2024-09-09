@@ -109,7 +109,7 @@ const SEM = () => {
   useEffect(() => {
     const fetchdata = async () => {
       try {
-        const response = await fetch('http://localhost:4000/cbcs/staf/Attendence/' + staff.course_id, {
+        const response = await fetch('https://sathyabama-cbcs.onrender.com/cbcs/staf/Attendence/' + staff.course_id, {
           headers: { 'Authorization': `Bearer ${staff.token}` }
         })
         const json = await response.json()
@@ -130,7 +130,7 @@ const SEM = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     const info = { CAE1: true, CAE2: true, SEM: true }
-    const response = await fetch('http://localhost:4000/cbcs/staf/Marks/given/staffinfo/' + staff.id, {
+    const response = await fetch('https://sathyabama-cbcs.onrender.com/cbcs/staf/Marks/given/staffinfo/' + staff.id, {
       method: 'POST',
       body: JSON.stringify(info),
       headers: {
@@ -140,7 +140,7 @@ const SEM = () => {
     })
     Object.entries(Marks).map(async([studentId, marks]) =>{
       const info = {Marks:marks}
-      const response = await fetch('http://localhost:4000/cbcs/staf/Marks/given/SEM/'+studentId, {
+      const response = await fetch('https://sathyabama-cbcs.onrender.com/cbcs/staf/Marks/given/SEM/'+studentId, {
       method: 'POST',
       body: JSON.stringify(info),
       headers: {

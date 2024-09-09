@@ -29,7 +29,7 @@ const AttendanceSheet = () => {
   useEffect(() => {
     const fetchdata = async () => {
       try {
-        const response = await fetch('http://localhost:4000/cbcs/staf/Attendence/' + staff.course_id, {
+        const response = await fetch('https://sathyabama-cbcs.onrender.com/cbcs/staf/Attendence/' + staff.course_id, {
           headers: { 'Authorization': `Bearer ${staff.token}` }
         });
         const json = await response.json();
@@ -38,7 +38,7 @@ const AttendanceSheet = () => {
           setFilteredData(json); // Set initial filtered data
         }
         setDates(json.map((value) => value.Attendence.map((v) => v.Date)));
-        const resDate = await fetch('http://localhost:4000/cbcs/staf/Date/' + staff.id, {
+        const resDate = await fetch('https://sathyabama-cbcs.onrender.com/cbcs/staf/Date/' + staff.id, {
           headers: { 'Authorization': `Bearer ${staff.token}` }
         });
         const ob = await resDate.json();

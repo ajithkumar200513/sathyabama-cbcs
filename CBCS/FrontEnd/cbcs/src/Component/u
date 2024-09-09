@@ -19,7 +19,7 @@ useEffect(()=>
 {
   const fetchdata = async() =>
   {
-    const responce = await fetch('http://localhost:4000/cbcs/staf/Attendence/'+staff.course_id,
+    const responce = await fetch('https://sathyabama-cbcs.onrender.com/cbcs/staf/Attendence/'+staff.course_id,
     {headers:{'Authorization':`Bearer ${staff.token}`}})
     const json = await responce.json()
     console.log(json)

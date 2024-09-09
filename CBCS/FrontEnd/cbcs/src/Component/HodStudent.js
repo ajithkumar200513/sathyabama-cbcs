@@ -15,7 +15,7 @@ const HodStudent = () => {
   useEffect(() => {
     const fetchdata = async () => {
       const reqbody = { "Dept": HOD.Dept };
-      const response = await fetch('http://localhost:4000/cbcs/hod/studinfo', {
+      const response = await fetch('https://sathyabama-cbcs.onrender.com/cbcs/hod/studinfo', {
         method: 'POST',
         body: JSON.stringify(reqbody),
         headers: {

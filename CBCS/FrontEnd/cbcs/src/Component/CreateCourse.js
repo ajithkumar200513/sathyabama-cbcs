@@ -17,7 +17,7 @@ const CreateCourse = () => {
     e.preventDefault();
     const course = { CourseName, Coordinator, ProvidedBy, Seats };
 
-    const response = await fetch('http://localhost:4000/cbcs/hod/create', {
+    const response = await fetch('https://sathyabama-cbcs.onrender.com/cbcs/hod/create', {
       method: 'POST',
       body: JSON.stringify(course),
       headers: {
@@ -43,7 +43,7 @@ const CreateCourse = () => {
 
   useEffect(() => {
     const fetchStafs = async () => {
-      const StafInfo = await fetch('http://localhost:4000/cbcs/hod/Stafs', {
+      const StafInfo = await fetch('https://sathyabama-cbcs.onrender.com/cbcs/hod/Stafs', {
         headers: {
           'Content-Type': 'application/json',
           'Authorization': `Bearer ${HOD.token}`

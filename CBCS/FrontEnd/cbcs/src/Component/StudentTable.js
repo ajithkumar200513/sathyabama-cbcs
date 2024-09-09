@@ -41,7 +41,7 @@ const StudentTable = ({ course }) => {
 
     const handleRegister = async (e) => {
         e.preventDefault();
-        const response = await fetch(`http://localhost:4000/cbcs/course/update/${courseInfo._id}`, {
+        const response = await fetch(`https://sathyabama-cbcs.onrender.com/cbcs/course/update/${courseInfo._id}`, {
             method: 'PUT',
             body: JSON.stringify({ user_id: user.user_id }),
             headers: {
@@ -57,7 +57,7 @@ const StudentTable = ({ course }) => {
             dispatch({ type: 'SET_COURSE', payload: json });
         }
 
-        const response1 = await fetch(`http://localhost:4000/cbcs/course/update/user/${user.user_id}`, {
+        const response1 = await fetch(`https://sathyabama-cbcs.onrender.com/cbcs/course/update/user/${user.user_id}`, {
             method: 'PUT',
             body: JSON.stringify({ course_id: courseInfo._id }),
             headers: {

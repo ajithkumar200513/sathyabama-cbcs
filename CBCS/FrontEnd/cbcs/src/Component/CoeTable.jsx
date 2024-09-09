@@ -12,7 +12,7 @@ const CoeTable = ({ Dept }) => {
 
   useEffect(() => {
     async function fetchData() {
-      const response = await fetch(`http://localhost:4000/cbcs/COE/getstudinfo`, {
+      const response = await fetch(`https://sathyabama-cbcs.onrender.com/cbcs/COE/getstudinfo`, {
         method: 'POST',
         body: JSON.stringify(ip),
         headers: {

@@ -22,7 +22,7 @@ const AttendenceInfo = () => {
   const handleclick = async (value) => {
     setPDate(value);
     const Data = { Id: `${staff.id}`, Date: `${value}` };
-    const response = await fetch('http://localhost:4000/cbcs/staf/Attendence/Info', {
+    const response = await fetch('https://sathyabama-cbcs.onrender.com/cbcs/staf/Attendence/Info', {
       method: 'POST',
       body: JSON.stringify(Data),
       headers: {
@@ -39,7 +39,7 @@ const AttendenceInfo = () => {
   useEffect(() => {
     const fetchData = async () => {
       const Id = { Id: `${staff.id}` };
-      const response = await fetch('http://localhost:4000/cbcs/staf/Attendence/Date', {
+      const response = await fetch('https://sathyabama-cbcs.onrender.com/cbcs/staf/Attendence/Date', {
         method: 'POST',
         body: JSON.stringify(Id),
         headers: {

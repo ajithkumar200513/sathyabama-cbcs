@@ -19,7 +19,7 @@ const HodHome = () => {
   useEffect(() =>
   {
   const fetchcourse = async() =>{
-  const response = await fetch('http://localhost:4000/cbcs/hod/course',
+  const response = await fetch('https://sathyabama-cbcs.onrender.com/cbcs/hod/course',
   {headers:{'Authorization':`Bearer ${HOD.token}`}})
   const json = await response.json()
   console.log(json)

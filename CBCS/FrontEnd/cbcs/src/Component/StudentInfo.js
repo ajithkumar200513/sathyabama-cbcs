@@ -6,7 +6,7 @@ const StudentInfo = ({ user }) => {
     useEffect(() => {
         async function fetchData() {
             try {
-                const response = await fetch(`http://localhost:4000/cbcs/course/${user.user_id}`, {
+                const response = await fetch(`https://sathyabama-cbcs.onrender.com/cbcs/course/${user.user_id}`, {
                     headers: { 'Authorization': `Bearer ${user.token}` }
                 });
                 if (!response.ok) {
