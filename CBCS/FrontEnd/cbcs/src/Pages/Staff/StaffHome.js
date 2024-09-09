@@ -17,8 +17,8 @@ const StaffHome = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await fetch(`https://sathyabama-cbcs.onrender.com/cbcs/staf/RegStudent/${staff.id}`, {
-          headers: { Authorization: `Bearer ${staff.token}` }
+        const response = await fetch(https://sathyabama-cbcs.onrender.com/cbcs/staf/RegStudent/${staff.id}, {
+          headers: { Authorization: Bearer ${staff.token} }
         });
         const json = await response.json();
         if (response.ok) {
@@ -98,8 +98,8 @@ const StaffHome = () => {
     container: {
       display: 'flex',
       minHeight: '100vh',
-      backgroundColor: uploadedImage ? `url(${uploadedImage})` : '#f0f0f0',
-      backgroundImage: `url(${defaultBackgroundImage})`,
+      backgroundColor: uploadedImage ? url(${uploadedImage}) : '#f0f0f0',
+      backgroundImage: url(${defaultBackgroundImage}),
       backgroundSize: 'cover',
       backgroundPosition: 'center',
       backgroundRepeat: 'no-repeat',
@@ -108,7 +108,7 @@ const StaffHome = () => {
     sideNavbar: {
       flex: '0 0 250px',
       padding: '20px',
-      backgroundColor: '#9e1c3f', // COE theme color from HodNav
+      backgroundColor: '#9e1c3f', // Theme color
       color: '#fff',
       borderRight: '1px solid #ddd',
       display: 'flex',
@@ -132,7 +132,7 @@ const StaffHome = () => {
       width: '100%',
       padding: '10px 20px',
       margin: '10px 0',
-      backgroundColor: '#c2185b', // Lighter shade for buttons from HodNav
+      backgroundColor: '#721022',
       color: '#fff',
       border: 'none',
       borderRadius: '4px',
@@ -142,12 +142,12 @@ const StaffHome = () => {
       fontSize: '16px',
     },
     activeNavButton: {
-      backgroundColor: '#d32f2f', // Hover effect color from HodNav
+      backgroundColor: '#9e1c3f',
     },
     logoutButton: {
       marginTop: '20px',
       padding: '10px 20px',
-      backgroundColor: '#c2185b', // Match button color with HodNav
+      backgroundColor: '#721022',
       color: '#fff',
       border: 'none',
       borderRadius: '4px',
@@ -178,7 +178,7 @@ const StaffHome = () => {
     },
     searchButton: {
       padding: '10px 20px',
-      backgroundColor: '#c2185b', // Match button color with HodNav
+      backgroundColor: '#721022',
       color: '#fff',
       border: 'none',
       borderRadius: '4px',
@@ -209,7 +209,7 @@ const StaffHome = () => {
       padding: '10px 20px',
       margin: '0 5px',
       border: 'none',
-      backgroundColor: '#c2185b', // Match button color with HodNav
+      backgroundColor: '#721022',
       color: '#fff',
       cursor: 'pointer',
     },
@@ -303,5 +303,3 @@ const StaffHome = () => {
     </div>
   );
 };
-
-export default StaffHome;
