@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useStaffAuthContext } from '../Hooks/useStaffAuthContext';
 import backgroundImage from '../css/logo.png'; // Ensure this path is correct
 
-const CAE1 = () => {
+const CAE2 = () => {
   const [Data, setData] = useState([]);
   const { staff } = useStaffAuthContext();
   const [loading, setLoading] = useState(true);
@@ -80,21 +80,20 @@ const CAE1 = () => {
       justifyContent: 'space-between',
       marginBottom: '20px',
     },
-    paginationContainer: {
-      marginTop: '20px',
+    pagination: {
       display: 'flex',
       justifyContent: 'center',
-      alignItems: 'center',
+      marginTop: '20px',
     },
     paginationButton: {
-      padding: '10px 20px',
       backgroundColor: '#9e1c3f',
       color: '#fff',
+      padding: '10px 20px',
       border: 'none',
       borderRadius: '5px',
       cursor: 'pointer',
-      fontSize: '16px',
       margin: '0 5px',
+      transition: 'background-color 0.3s',
     },
     paginationButtonDisabled: {
       backgroundColor: '#ccc',
@@ -137,7 +136,7 @@ const CAE1 = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const info = { CAE1: true, CAE2: false, SEM: false };
+      const info = { CAE1: true, CAE2: true, SEM: false };
       const response = await fetch(`https://sathyabama-cbcs.onrender.com/cbcs/staf/Marks/given/staffinfo/${staff.id}`, {
         method: 'POST',
         body: JSON.stringify(info),
@@ -153,7 +152,7 @@ const CAE1 = () => {
 
       await Promise.all(
         Object.entries(Marks).map(async ([studentId, marks]) => {
-          const response = await fetch(`https://sathyabama-cbcs.onrender.com/cbcs/staf/Marks/given/CAE1/${studentId}`, {
+          const response = await fetch(`https://sathyabama-cbcs.onrender.com/cbcs/staf/Marks/given/CAE2/${studentId}`, {
             method: 'POST',
             body: JSON.stringify({ Marks: marks }),
             headers: {
@@ -167,9 +166,7 @@ const CAE1 = () => {
         })
       );
 
-      // Update state to reflect changes instead of reloading
       setMarks({});
-
       alert('Marks submitted successfully.');
     } catch (error) {
       console.error('Error submitting marks:', error);
@@ -186,24 +183,18 @@ const CAE1 = () => {
     student.RegNo.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
-  // Pagination Logic
   const indexOfLastItem = currentPage * itemsPerPage;
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
-  const currentData = filteredData.slice(indexOfFirstItem, indexOfLastItem);
+  const currentItems = filteredData.slice(indexOfFirstItem, indexOfLastItem);
+  const total
   const totalPages = Math.ceil(filteredData.length / itemsPerPage);
-
-  const handlePreviousPage = () => {
-    setCurrentPage(prevPage => Math.max(prevPage - 1, 1));
-  };
-
-  const handleNextPage = () => {
-    setCurrentPage(prevPage => Math.min(prevPage + 1, totalPages));
-  };
 
   return (
     <div style={styles.container}>
-      <h2 style={styles.heading}>CAE-1</h2>
-      {staff.CAE1 ? <h1>Marks Already Given</h1> : (
+      <h2 style={styles.heading}>CAE-2</h2>
+      {staff.CAE2 ? (
+        <h1>Marks Already Given</h1>
+      ) : (
         <form style={styles.form} onSubmit={handleSubmit}>
           <div style={styles.searchContainer}>
             <input
@@ -231,7 +222,7 @@ const CAE1 = () => {
               </tr>
             </thead>
             <tbody>
-              {currentData.map((student) => (
+              {currentItems.map((student) => (
                 <tr key={student._id}>
                   <td style={styles.td}>{student.Name}</td>
                   <td style={styles.td}>{student.RegNo}</td>
@@ -246,18 +237,26 @@ const CAE1 = () => {
               ))}
             </tbody>
           </table>
-          <div style={styles.paginationContainer}>
+          <div style={styles.pagination}>
             <button
-              style={{ ...styles.paginationButton, ...(currentPage === 1 ? styles.paginationButtonDisabled : {}) }}
-              onClick={handlePreviousPage}
+              type="button"
+              style={{
+                ...styles.paginationButton,
+                ...(currentPage === 1 && styles.paginationButtonDisabled)
+              }}
+              onClick={() => setCurrentPage(prev => Math.max(prev - 1, 1))}
               disabled={currentPage === 1}
             >
               Previous
             </button>
-            <span>Page {currentPage} of {totalPages}</span>
+            <span>{`Page ${currentPage} of ${totalPages}`}</span>
             <button
-              style={{ ...styles.paginationButton, ...(currentPage === totalPages ? styles.paginationButtonDisabled : {}) }}
-              onClick={handleNextPage}
+              type="button"
+              style={{
+                ...styles.paginationButton,
+                ...(currentPage === totalPages && styles.paginationButtonDisabled)
+              }}
+              onClick={() => setCurrentPage(prev => Math.min(prev + 1, totalPages))}
               disabled={currentPage === totalPages}
             >
               Next
@@ -277,4 +276,4 @@ const CAE1 = () => {
   );
 };
 
-export default CAE1;
+export default CAE2;
