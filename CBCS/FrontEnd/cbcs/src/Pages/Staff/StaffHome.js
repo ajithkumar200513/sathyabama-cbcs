@@ -108,7 +108,7 @@ const StaffHome = () => {
     sideNavbar: {
       flex: '0 0 250px',
       padding: '20px',
-      backgroundColor: '#9e1c3f', // Theme color
+      backgroundColor: '#9e1c3f', // COE theme color from HodNav
       color: '#fff',
       borderRight: '1px solid #ddd',
       display: 'flex',
@@ -132,7 +132,7 @@ const StaffHome = () => {
       width: '100%',
       padding: '10px 20px',
       margin: '10px 0',
-      backgroundColor: '#721022',
+      backgroundColor: '#c2185b', // Lighter shade for buttons from HodNav
       color: '#fff',
       border: 'none',
       borderRadius: '4px',
@@ -142,12 +142,12 @@ const StaffHome = () => {
       fontSize: '16px',
     },
     activeNavButton: {
-      backgroundColor: '#9e1c3f',
+      backgroundColor: '#d32f2f', // Hover effect color from HodNav
     },
     logoutButton: {
       marginTop: '20px',
       padding: '10px 20px',
-      backgroundColor: '#721022',
+      backgroundColor: '#c2185b', // Match button color with HodNav
       color: '#fff',
       border: 'none',
       borderRadius: '4px',
@@ -178,7 +178,7 @@ const StaffHome = () => {
     },
     searchButton: {
       padding: '10px 20px',
-      backgroundColor: '#721022',
+      backgroundColor: '#c2185b', // Match button color with HodNav
       color: '#fff',
       border: 'none',
       borderRadius: '4px',
@@ -209,7 +209,7 @@ const StaffHome = () => {
       padding: '10px 20px',
       margin: '0 5px',
       border: 'none',
-      backgroundColor: '#721022',
+      backgroundColor: '#c2185b', // Match button color with HodNav
       color: '#fff',
       cursor: 'pointer',
     },
