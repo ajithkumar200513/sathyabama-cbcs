@@ -16,15 +16,21 @@ const StaffHome = () => {
 
   useEffect(() => {
     const fetchData = async () => {
-      const response = await fetch(`https://sathyabama-cbcs.onrender.com
-        /cbcs/staf/RegStudent/${staff.id}`, {
-        headers: { Authorization: `Bearer ${staff.token}` }
-      });
-      const json = await response.json();
-      if (response.ok) {
-        setData(json);
+      try {
+        const response = await fetch(`https://sathyabama-cbcs.onrender.com/cbcs/staf/RegStudent/${staff.id}`, {
+          headers: { Authorization: `Bearer ${staff.token}` }
+        });
+        const json = await response.json();
+        if (response.ok) {
+          setData(json);
+        } else {
+          console.error('Error fetching data:', json);
+        }
+      } catch (error) {
+        console.error('Fetch error:', error);
       }
     };
+
     if (staff) {
       fetchData();
     }
@@ -70,6 +76,9 @@ const StaffHome = () => {
     setSearchQuery(event.target.value);
   };
 
+  // Log the fetched data for debugging purposes
+  console.log('Fetched Data:', data);
+
   // Filter data based on the search query
   const filteredData = data.flatMap(course =>
     course.RegStudents.filter(student =>
@@ -80,6 +89,8 @@ const StaffHome = () => {
       Course: course.CourseName // Add the course name to each student
     }))
   );
+
+  console.log('Filtered Data:', filteredData);
 
   // Paginate the filtered data
   const indexOfLastStudent = currentPage * studentsPerPage;
@@ -113,11 +124,6 @@ const StaffHome = () => {
       textAlign: 'center',
       marginBottom: '20px',
     },
-   
-   
-   
-   
-    
     info: {
       margin: '10px 0',
       fontWeight: 'bold',
@@ -212,7 +218,6 @@ const StaffHome = () => {
       color: '#fff',
       cursor: 'pointer',
     },
-   
     '@media (max-width: 768px)': {
       container: {
         flexDirection: 'column',
@@ -242,7 +247,6 @@ const StaffHome = () => {
       {staff && (
         <div style={styles.sideNavbar}>
           <div style={styles.staffDetails}>
-           
             <p style={styles.info}>{staff.Name}</p>
             <p style={styles.info}>{staff.Email}</p>
           </div>
@@ -254,7 +258,7 @@ const StaffHome = () => {
           <button onClick={handleLogout} style={styles.logoutButton}>LOG OUT</button>
         </div>
       )}
-      {data.length > 0 && (
+      {data && data.length > 0 ? (
         <div style={styles.tableContainer}>
           <div style={styles.searchContainer}>
             <input
@@ -271,12 +275,7 @@ const StaffHome = () => {
               <tr>
                 <th style={styles.th}>Name</th>
                 <th style={styles.th}>RegNo</th>
-                <th style={styles.th}>Email</th>
-                <th style={styles.th}>DEPT</th>
                 <th style={styles.th}>Course</th>
-                <th style={styles.th}>CAE-1</th>
-                <th style={styles.th}>CAE-2</th>
-                <th style={styles.th}>SEM</th>
               </tr>
             </thead>
             <tbody>
@@ -284,22 +283,25 @@ const StaffHome = () => {
                 <tr key={index}>
                   <td style={styles.td}>{student.Name}</td>
                   <td style={styles.td}>{student.RegNo}</td>
-                  <td style={styles.td}>{student.Email}</td>
-                  <td style={styles.td}>{student.Dept}</td>
                   <td style={styles.td}>{student.Course}</td>
-                  <td style={styles.td}>{student.CAE1? student.CAE1 : 'N/A'}</td>
-                  <td style={styles.td}>{student.CAE2? student.CAE2 : 'N/A'}</td>
-                  <td style={styles.td}>{student.SEM ? student.SEM : 'N/A'}</td>
                 </tr>
               ))}
             </tbody>
           </table>
           <div style={styles.pagination}>
-            {Array.from({ length: Math.ceil(filteredData.length / studentsPerPage) }, (_, index) => (
-              <button key={index + 1} onClick={() => paginate(index + 1)} style={styles.paginationButton}>{index + 1}</button>
+            {Array.from({ length: Math.ceil(filteredData.length / studentsPerPage) }, (_, i) => (
+              <button
+                key={i}
+                onClick={() => paginate(i + 1)}
+                style={styles.paginationButton}
+              >
+                {i + 1}
+              </button>
             ))}
           </div>
         </div>
+      ) : (
+        <p>No student data available.</p>
       )}
     </div>
   );
