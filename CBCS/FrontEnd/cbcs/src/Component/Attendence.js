@@ -1,20 +1,20 @@
 import React, { useEffect, useState } from 'react';
 import { useStaffAuthContext } from '../Hooks/useStaffAuthContext';
-import backgroundImage from '../css/logo.png'; // Make sure this path is correct
+import backgroundImage from '../css/logo.png'; // Ensure this path is correct
 
 const AttendanceSheet = () => {
   const [Data, setData] = useState([]);
   const [filteredData, setFilteredData] = useState([]);
   const [searchTerm, setSearchTerm] = useState('');
-  const [Dates, setDates] = useState();
-  const [curdate, setcur] = useState();
-  const [resid, setresid] = useState();
-  const [attendance, setAttendance] = useState(null);
+  const [Dates, setDates] = useState([]);
+  const [curdate, setcur] = useState('');
+  const [resid, setresid] = useState('');
+  const [attendance, setAttendance] = useState({});
   const { staff } = useStaffAuthContext();
   const today = new Date();
   const formattedDate = formatDate(today);
   const [loading, setLoading] = useState(true);
-  
+
   // Pagination State
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 10;
@@ -35,21 +35,23 @@ const AttendanceSheet = () => {
         const json = await response.json();
         if (response.ok) {
           setData(json);
-          setFilteredData(json); // Set initial filtered data
+          setFilteredData(json);
+          setDates([...new Set(json.flatMap(value => value.Attendence.map(v => v.Date)))]);
         }
-        setDates(json.map((value) => value.Attendence.map((v) => v.Date)));
         const resDate = await fetch('https://sathyabama-cbcs.onrender.com/cbcs/staf/Date/' + staff.id, {
           headers: { 'Authorization': `Bearer ${staff.token}` }
+       
         });
         const ob = await resDate.json();
         setcur(ob.Date.toString());
         setresid(ob.StaffId);
       } catch (error) {
-        console.error();
+        console.error('Error fetching data:', error);
       } finally {
         setLoading(false);
       }
     };
+
     if (staff) {
       fetchdata();
     }
@@ -86,42 +88,57 @@ const AttendanceSheet = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const Date = { "Date": formattedDate.toString(), "Id": staff.id };
-    const response = await fetch('https://sathyabama-cbcs.onrender.com/cbcs/staf/Attendence/Given', {
-      method: 'POST',
-      body: JSON.stringify(Date),
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${staff.token}`
-      }
-    });
+    if (!Object.values(attendance).includes(true)) {
+      alert('Please mark at least one student present.');
+      return;
+    }
 
-    Object.entries(attendance).map(async ([studentId, isPresent]) => {
-      const course = { "Date": formattedDate.toString(), present: isPresent, Id: staff.id };
-      const response = await fetch('https://sathyabama-cbcs.onrender.com/cbcs/staf/Attendence/Given/' + studentId, {
+    try {
+      const Date = { "Date": formattedDate.toString(), "Id": staff.id };
+      const response = await fetch('https://sathyabama-cbcs.onrender.com/cbcs/staf/Attendence/Given', {
         method: 'POST',
-        body: JSON.stringify(course),
+        body: JSON.stringify(Date),
         headers: {
           'Content-Type': 'application/json',
           'Authorization': `Bearer ${staff.token}`
         }
       });
-    });
 
-    Object.entries(attendance).map(async ([studentId, isPresent]) => {
-      const course = { "Date": formattedDate.toString(), present: isPresent, Id: staff.id };
-      const response1 = await fetch('https://sathyabama-cbcs.onrender.com/cbcs/staf/Attendence/student/given/' + studentId, {
-        method: 'POST',
-        body: JSON.stringify(course),
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${staff.token}`
-        }
-      });
-    });
+      if (!response.ok) throw new Error('Failed to submit attendance.');
 
-    if (response.ok) {
+      await Promise.all(
+        Object.entries(attendance).map(([studentId, isPresent]) => {
+          const course = { "Date": formattedDate.toString(), present: isPresent, Id: staff.id };
+          return fetch('https://sathyabama-cbcs.onrender.com/cbcs/staf/Attendence/Given/' + studentId, {
+            method: 'POST',
+            body: JSON.stringify(course),
+            headers: {
+              'Content-Type': 'application/json',
+              'Authorization': `Bearer ${staff.token}`
+            }
+          });
+        })
+      );
+
+      await Promise.all(
+        Object.entries(attendance).map(([studentId, isPresent]) => {
+          const course = { "Date": formattedDate.toString(), present: isPresent, Id: staff.id };
+          return fetch('https://sathyabama-cbcs.onrender.com/cbcs/staf/Attendence/student/given/' + studentId, {
+            method: 'POST',
+            body: JSON.stringify(course),
+            headers: {
+              'Content-Type': 'application/json',
+              'Authorization': `Bearer ${staff.token}`
+            }
+          });
+        })
+      );
+
+      alert('Attendance submitted successfully.');
       window.location.reload();
+    } catch (error) {
+      console.error('Error submitting attendance:', error);
+      alert('Failed to submit attendance.');
     }
   };
 
@@ -245,15 +262,11 @@ const AttendanceSheet = () => {
           onChange={(e) => setSearchTerm(e.target.value)}
           style={styles.searchInput}
         />
-        <button style={styles.searchButton} onClick={() => setFilteredData(Data.filter(student =>
-          student.Name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-          student.RegNo.toLowerCase().includes(searchTerm.toLowerCase())
-        ))}>Search</button>
+        <button style={styles.searchButton} onClick={() => setSearchTerm(searchTerm)}>Search</button>
       </div>
-      {(curdate === formattedDate) && (resid === staff.id) &&
-        <label>Attendance already given</label>}
+      {(curdate === formattedDate && resid === staff.id) && <label>Attendance already given</label>}
       {!(curdate === formattedDate && resid === staff.id) &&
-        <form>
+        <form onSubmit={handleSubmit}>
           <table style={styles.table}>
             <thead>
               <tr>
@@ -270,7 +283,7 @@ const AttendanceSheet = () => {
                   <td style={styles.td}>
                     <input
                       type="checkbox"
-                      checked={attendance[student._id]}
+                      checked={attendance[student._id] || false}
                       onChange={() => toggleAttendance(student._id)}
                     />
                   </td>
@@ -278,7 +291,7 @@ const AttendanceSheet = () => {
               ))}
             </tbody>
           </table>
-          <button style={styles.submitButton} onClick={(e) => handleSubmit(e)}>SUBMIT</button>
+          <button style={styles.submitButton} type="submit">SUBMIT</button>
         </form>
       }
       <div style={styles.paginationContainer}>
