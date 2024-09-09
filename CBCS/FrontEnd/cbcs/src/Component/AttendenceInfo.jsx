@@ -1,337 +1,305 @@
 import React, { useEffect, useState } from 'react';
 import { useStaffAuthContext } from '../Hooks/useStaffAuthContext';
-import bgImage from '../css/logo.png'; // Ensure this path is correct
+import backgroundImage from '../css/logo.png'; // Make sure this path is correct
 
-const AttendenceInfo = () => {
+const AttendanceSheet = () => {
+  const [Data, setData] = useState([]);
+  const [filteredData, setFilteredData] = useState([]);
+  const [searchTerm, setSearchTerm] = useState('');
+  const [Dates, setDates] = useState();
+  const [curdate, setcur] = useState();
+  const [resid, setresid] = useState();
+  const [attendance, setAttendance] = useState(null);
   const { staff } = useStaffAuthContext();
-  const [Date, setDates] = useState([]);
-  const [pdate, setPDate] = useState('');
-  const [attendencedata, setAttendenceData] = useState([]);
-  const [searchQuery, setSearchQuery] = useState('');
-  const [dateSearchQuery, setDateSearchQuery] = useState('');
-  const [filteredDates, setFilteredDates] = useState([]);
-
-  // Pagination states for dates
-  const [currentPageDates, setCurrentPageDates] = useState(1);
-  const itemsPerPageDates = 90; // Display 90 dates per page
-
-  // Pagination states for attendance data
+  const today = new Date();
+  const formattedDate = formatDate(today);
+  const [loading, setLoading] = useState(true);
+  
+  // Pagination State
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 10;
 
-  const handleclick = async (value) => {
-    setPDate(value);
-    const Data = { Id: `${staff.id}`, Date: `${value}` };
-    const response = await fetch('https://sathyabama-cbcs.onrender.com/cbcs/staf/Attendence/Info', {
-      method: 'POST',
-      body: JSON.stringify(Data),
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${staff.token}`,
-      },
-    });
-    if (response.ok) {
-      const json = await response.json();
-      setAttendenceData(json.StudentInfo);
-    }
+  const toggleAttendance = (studentId) => {
+    setAttendance((prevAttendance) => ({
+      ...prevAttendance,
+      [studentId]: !prevAttendance[studentId],
+    }));
   };
 
   useEffect(() => {
-    const fetchData = async () => {
-      const Id = { Id: `${staff.id}` };
-      const response = await fetch('https://sathyabama-cbcs.onrender.com/cbcs/staf/Attendence/Date', {
-        method: 'POST',
-        body: JSON.stringify(Id),
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${staff.token}`,
-        },
-      });
-      if (response.ok) {
+    const fetchdata = async () => {
+      try {
+        const response = await fetch('https://sathyabama-cbcs.onrender.com/cbcs/staf/Attendence/' + staff.course_id, {
+          headers: { 'Authorization': `Bearer ${staff.token}` }
+        });
         const json = await response.json();
-        setDates(json);
-        setFilteredDates(json);
+        if (response.ok) {
+          setData(json);
+          setFilteredData(json); // Set initial filtered data
+        }
+        setDates(json.map((value) => value.Attendence.map((v) => v.Date)));
+        const resDate = await fetch('https://sathyabama-cbcs.onrender.com/cbcs/staf/Date/' + staff.id, {
+          headers: { 'Authorization': `Bearer ${staff.token}` }
+        });
+        const ob = await resDate.json();
+        setcur(ob.Date.toString());
+        setresid(ob.StaffId);
+      } catch (error) {
+        console.error();
+      } finally {
+        setLoading(false);
       }
     };
-    fetchData();
+    if (staff) {
+      fetchdata();
+    }
   }, [staff]);
 
   useEffect(() => {
-    const filtered = Date.filter(date =>
-      date.Date.includes(dateSearchQuery)
-    );
-    setFilteredDates(filtered);
-  }, [dateSearchQuery, Date]);
+    const updatedAttendance = {};
+    if (Data) {
+      Data.forEach((student) => {
+        updatedAttendance[student._id] = false;
+      });
+      setAttendance(updatedAttendance);
+    }
+  }, [Data]);
 
-  const handleSearchChange = (event) => {
-    setSearchQuery(event.target.value);
+  useEffect(() => {
+    if (searchTerm) {
+      const filtered = Data.filter(student =>
+        student.Name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        student.RegNo.toLowerCase().includes(searchTerm.toLowerCase())
+      );
+      setFilteredData(filtered);
+    } else {
+      setFilteredData(Data);
+    }
+  }, [searchTerm, Data]);
+
+  function formatDate(date) {
+    const day = String(date.getDate()).padStart(2, '0');
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const year = date.getFullYear();
+    return `${day}/${month}/${year}`;
+  }
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    const Date = { "Date": formattedDate.toString(), "Id": staff.id };
+    const response = await fetch('https://sathyabama-cbcs.onrender.com/cbcs/staf/Attendence/Given', {
+      method: 'POST',
+      body: JSON.stringify(Date),
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${staff.token}`
+      }
+    });
+
+    Object.entries(attendance).map(async ([studentId, isPresent]) => {
+      const course = { "Date": formattedDate.toString(), present: isPresent, Id: staff.id };
+      const response = await fetch('https://sathyabama-cbcs.onrender.com/cbcs/staf/Attendence/Given/' + studentId, {
+        method: 'POST',
+        body: JSON.stringify(course),
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${staff.token}`
+        }
+      });
+    });
+
+    Object.entries(attendance).map(async ([studentId, isPresent]) => {
+      const course = { "Date": formattedDate.toString(), present: isPresent, Id: staff.id };
+      const response1 = await fetch('https://sathyabama-cbcs.onrender.com/cbcs/staf/Attendence/student/given/' + studentId, {
+        method: 'POST',
+        body: JSON.stringify(course),
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${staff.token}`
+        }
+      });
+    });
+
+    if (response.ok) {
+      window.location.reload();
+    }
   };
 
-  const handleDateSearch = () => {
-    const filtered = Date.filter(date =>
-      date.Date.includes(dateSearchQuery)
-    );
-    setFilteredDates(filtered);
-  };
-
-  // Filter attendance data based on search query
-  const filteredAttendenceData = attendencedata.filter(student =>
-    student.StudentId.Name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    student.StudentId.RegNo.toLowerCase().includes(searchQuery.toLowerCase())
-  );
-
-  // Pagination logic for dates
-  const indexOfLastDate = currentPageDates * itemsPerPageDates;
-  const indexOfFirstDate = indexOfLastDate - itemsPerPageDates;
-  const currentDates = filteredDates.slice(indexOfFirstDate, indexOfLastDate);
-  const totalPagesDates = Math.ceil(filteredDates.length / itemsPerPageDates);
-
-  // Pagination logic for attendance data
+  // Pagination Logic
   const indexOfLastItem = currentPage * itemsPerPage;
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
-  const currentItems = filteredAttendenceData.slice(indexOfFirstItem, indexOfLastItem);
-  const totalPages = Math.ceil(filteredAttendenceData.length / itemsPerPage);
+  const currentData = filteredData.slice(indexOfFirstItem, indexOfLastItem);
+  const totalPages = Math.ceil(filteredData.length / itemsPerPage);
 
-  const handlePageChangeDates = (direction) => {
-    setCurrentPageDates(prevPage => {
-      if (direction === 'next' && prevPage < totalPagesDates) return prevPage + 1;
-      if (direction === 'prev' && prevPage > 1) return prevPage - 1;
-      return prevPage;
-    });
+  const handlePreviousPage = () => {
+    setCurrentPage(prevPage => Math.max(prevPage - 1, 1));
   };
 
-  const handlePageChange = (direction) => {
-    setCurrentPage(prevPage => {
-      if (direction === 'next' && prevPage < totalPages) return prevPage + 1;
-      if (direction === 'prev' && prevPage > 1) return prevPage - 1;
-      return prevPage;
-    });
+  const handleNextPage = () => {
+    setCurrentPage(prevPage => Math.min(prevPage + 1, totalPages));
   };
+
+  if (loading) {
+    return <p>Loading...</p>;
+  }
 
   const styles = {
     container: {
       display: 'flex',
       flexDirection: 'column',
       alignItems: 'center',
-      justifyContent: 'flex-start',
-      height: '100vh',
-      backgroundImage: `url(${bgImage})`,
+      backgroundImage: `url(${backgroundImage})`,
       backgroundSize: 'cover',
       backgroundPosition: 'center',
+      backgroundRepeat: 'no-repeat',
       padding: '20px',
-      textAlign: 'center',
+      minHeight: '100vh',
     },
-    dateSearchContainer: {
-      display: 'flex',
-      alignItems: 'center',
-      marginBottom: '10px',
-    },
-    searchContainer: {
-      marginBottom: '10px',
-    },
-    searchInput: {
-      padding: '5px',
-      fontSize: '14px',
-      borderRadius: '4px',
-      border: '1px solid #ddd',
-      marginRight: '10px',
-    },
-    searchButton: {
-      padding: '5px 10px',
-      borderRadius: '4px',
-      border: 'none',
-      backgroundColor: '#9e1c3f',
-      color: '#fff',
-      fontSize: '14px',
-      cursor: 'pointer',
-    },
-    datesGrid: {
-      display: 'grid',
-      gridTemplateColumns: 'repeat(auto-fit, minmax(100px, 1fr))',
-      gap: '5px',
-      width: '100%',
-      maxWidth: '600px',
-    },
-    dateItem: {
-      padding: '10px',
-      backgroundColor: '#9e1c3f',
-      color: '#fff',
-      borderRadius: '4px',
-      cursor: 'pointer',
-      transition: 'background-color 0.3s',
-      textAlign: 'center',
-      fontSize: '12px',
-    },
-    dateItemHover: {
-      backgroundColor: '#c2185b',
+    heading: {
+      fontSize: '24px',
+      color: '#333',
+      marginBottom: '20px',
     },
     table: {
       width: '100%',
-      maxWidth: '1200px',
-      margin: '10px 0',
+      maxWidth: '800px',
+      marginBottom: '20px',
       borderCollapse: 'collapse',
-      backgroundColor: '#fff',
-      borderRadius: '8px',
       boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)',
-      overflowX: 'auto',
     },
-    tableHeader: {
+    th: {
       backgroundColor: '#9e1c3f',
       color: '#fff',
-    },
-    tableHeaderCell: {
       padding: '10px',
-      border: '1px solid #ccc',
+      textAlign: 'left',
     },
-    tableBodyCell: {
+    td: {
+      backgroundColor: '#fff',
+      color: '#333',
       padding: '10px',
+      borderBottom: '1px solid #ddd',
+    },
+    submitButton: {
+      padding: '10px 20px',
+      backgroundColor: '#9e1c3f',
+      color: '#fff',
+      border: 'none',
+      borderRadius: '4px',
+      cursor: 'pointer',
+      fontSize: '16px',
+    },
+    searchInput: {
+      padding: '10px 20px',
+      borderRadius: '4px',
       border: '1px solid #ccc',
+      fontSize: '16px',
+      marginBottom: '2px',
+      width: '80%',
+      maxWidth: '400px',
     },
-    present: {
-      color: 'green',
+    searchButton: {
+      padding: '10px 20px',
+      backgroundColor: '#9e1c3f',
+      color: '#fff',
+      border: 'none',
+      borderRadius: '4px',
+      cursor: 'pointer',
+      fontSize: '16px',
+      marginLeft: '10px',
     },
-    absent: {
-      color: 'red',
+    searchContainer: {
+      display: 'flex',
+      alignItems: 'center',
+      marginBottom: '20px',
     },
-    pagination: {
+    paginationContainer: {
+      marginTop: '20px',
       display: 'flex',
       justifyContent: 'center',
-      margin: '20px 0',
+      alignItems: 'center',
     },
     paginationButton: {
       padding: '10px 20px',
-      borderRadius: '4px',
-      border: 'none',
       backgroundColor: '#9e1c3f',
       color: '#fff',
+      border: 'none',
+      borderRadius: '4px',
       cursor: 'pointer',
+      fontSize: '16px',
       margin: '0 5px',
-      transition: 'background-color 0.3s',
     },
     paginationButtonDisabled: {
       backgroundColor: '#ccc',
       cursor: 'not-allowed',
-    },
+    }
   };
-
-  const [hovered, setHovered] = useState(null);
 
   return (
     <div style={styles.container}>
-      {!pdate && (
-        <div>
-          <div style={styles.dateSearchContainer}>
-            <input
-              type="text"
-              placeholder="Search dates"
-              value={dateSearchQuery}
-              onChange={(e) => setDateSearchQuery(e.target.value)}
-              style={styles.searchInput}
-            />
-            <button onClick={handleDateSearch} style={styles.searchButton}>Search</button>
-          </div>
-          <div style={styles.datesGrid}>
-            {currentDates.map((value) => (
-              <div
-                key={value.Date}
-                style={{
-                  ...styles.dateItem,
-                  ...(hovered === value.Date ? styles.dateItemHover : {}),
-                }}
-                onClick={() => handleclick(value.Date)}
-                onMouseEnter={() => setHovered(value.Date)}
-                onMouseLeave={() => setHovered(null)}
-              >
-                {value.Date}
-              </div>
-            ))}
-          </div>
-          <div style={styles.pagination}>
-            <button
-              onClick={() => handlePageChangeDates('prev')}
-              style={{
-                ...styles.paginationButton,
-                ...(currentPageDates === 1 ? styles.paginationButtonDisabled : {}),
-              }}
-              disabled={currentPageDates === 1}
-            >
-              Previous
-            </button>
-            <span>{currentPageDates} / {totalPagesDates}</span>
-            <button
-              onClick={() => handlePageChangeDates('next')}
-              style={{
-                ...styles.paginationButton,
-                ...(currentPageDates === totalPagesDates ? styles.paginationButtonDisabled : {}),
-              }}
-              disabled={currentPageDates === totalPagesDates}
-            >
-              Next
-            </button>
-          </div>
-        </div>
-      )}
-      {pdate && (
-        <div>
-          <input
-            type="text"
-            placeholder="Search by Name or RegNo"
-            value={searchQuery}
-            onChange={handleSearchChange}
-            style={styles.searchInput}
-          />
+      <h2 style={styles.heading}>Attendance Sheet</h2>
+      <div style={styles.searchContainer}>
+        <input
+          type="text"
+          placeholder="Search by Name or Register Number"
+          value={searchTerm}
+          onChange={(e) => setSearchTerm(e.target.value)}
+          style={styles.searchInput}
+        />
+        <button style={styles.searchButton} onClick={() => setFilteredData(Data.filter(student =>
+          student.Name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+          student.RegNo.toLowerCase().includes(searchTerm.toLowerCase())
+        ))}>Search</button>
+      </div>
+      {(curdate === formattedDate) && (resid === staff.id) &&
+        <label>Attendance already given</label>}
+      {!(curdate === formattedDate && resid === staff.id) &&
+        <form>
           <table style={styles.table}>
-            <thead style={styles.tableHeader}>
+            <thead>
               <tr>
-                <th style={styles.tableHeaderCell}>Name</th>
-                <th style={styles.tableHeaderCell}>RegNo</th>
-                <th style={styles.tableHeaderCell}>Attendance</th>
+                <th style={styles.th}>Student ID</th>
+                <th style={styles.th}>Student Name</th>
+                <th style={styles.th}>Attendance</th>
               </tr>
             </thead>
             <tbody>
-              {currentItems.map((value) => (
-                <tr key={value.StudentId.RegNo}>
-                  <td style={styles.tableBodyCell}>{value.StudentId.Name}</td>
-                  <td style={styles.tableBodyCell}>{value.StudentId.RegNo}</td>
-                  <td
-                    style={{
-                      ...styles.tableBodyCell,
-                      ...(value.present ? styles.present : styles.absent),
-                    }}
-                  >
-                    {value.present ? 'Present' : 'Absent'}
+              {currentData.map((student) => (
+                <tr key={student._id}>
+                  <td style={styles.td}>{student.RegNo}</td>
+                  <td style={styles.td}>{student.Name}</td>
+                  <td style={styles.td}>
+                    <input
+                      type="checkbox"
+                      checked={attendance[student._id]}
+                      onChange={() => toggleAttendance(student._id)}
+                    />
                   </td>
                 </tr>
               ))}
             </tbody>
           </table>
-          <div style={styles.pagination}>
-            <button
-              onClick={() => handlePageChange('prev')}
-              style={{
-                ...styles.paginationButton,
-                ...(currentPage === 1 ? styles.paginationButtonDisabled : {}),
-              }}
-              disabled={currentPage === 1}
-            >
-              Previous
-            </button>
-            <span>{currentPage} / {totalPages}</span>
-            <button
-              onClick={() => handlePageChange('next')}
-              style={{
-                ...styles.paginationButton,
-                ...(currentPage === totalPages ? styles.paginationButtonDisabled : {}),
-              }}
-              disabled={currentPage === totalPages}
-            >
-              Next
-            </button>
-          </div>
-        </div>
-      )}
+          <button style={styles.submitButton} onClick={(e) => handleSubmit(e)}>SUBMIT</button>
+        </form>
+      }
+      <div style={styles.paginationContainer}>
+        <button
+          style={{ ...styles.paginationButton, ...(currentPage === 1 ? styles.paginationButtonDisabled : {}) }}
+          onClick={handlePreviousPage}
+          disabled={currentPage === 1}
+        >
+          Previous
+        </button>
+        <span>Page {currentPage} of {totalPages}</span>
+        <button
+          style={{ ...styles.paginationButton, ...(currentPage === totalPages ? styles.paginationButtonDisabled : {}) }}
+          onClick={handleNextPage}
+          disabled={currentPage === totalPages}
+        >
+          Next
+        </button>
+      </div>
     </div>
   );
 };
 
-export default AttendenceInfo;
+export default AttendanceSheet;
