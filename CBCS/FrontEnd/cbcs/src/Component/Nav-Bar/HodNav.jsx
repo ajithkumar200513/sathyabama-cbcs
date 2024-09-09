@@ -114,7 +114,7 @@ const HodNav = ({ course, handelclick }) => {
           <ul style={styles.sidebarUl}>
             <li style={styles.sidebarLi}><Link to='/hod/student_info' style={styles.sidebarLink}>Student Info</Link></li>
             <li style={styles.sidebarLi}><Link to='/hod/Create-course' style={styles.sidebarLink}>Create-Course</Link></li>
-            <li style={styles.sidebarLi}><Link to='/hod/About' style={styles.sidebarLink}>About</Link></li>
+            
             <li style={styles.sidebarLi}><a onClick={handelclick} style={{ ...styles.sidebarLink, cursor: 'pointer' }}>Log-out</a></li>
           </ul>
         </div>
