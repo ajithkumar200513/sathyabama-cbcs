@@ -30,7 +30,8 @@ app.use((req, res, next) => {
     next()
   })
   PORT = 4000
-mongoose.connect("mongoose.connect("mongodb+srv://ajithkumar200513:AJITH200536@ak%40ak@sathyabama-cbcs.ue7lv.mongodb.net/myDatabase?retryWrites=true&w=majority")
+mongoose.connect("mongoose.connect("mongoose.connect("mongodb+srv://ajithkumar200513:AJITH200536%40ak@sathyabama-cbcs.ue7lv.mongodb.net/myDatabase?retryWrites=true&w=majority")
+")
 ")
 
  .then(() => {
