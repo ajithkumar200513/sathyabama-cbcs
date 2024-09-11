@@ -219,7 +219,7 @@ const styles = {
       color: '#fff',
       cursor: 'pointer',
     },
-   '@media (max-width: 768px)': {
+  '@media (max-width: 768px)': {
     container: {
       display: 'flex',
       flexDirection: 'column',
@@ -278,6 +278,7 @@ const styles = {
       backgroundColor: '#fff',
       borderRadius: '8px',
       boxShadow: '0 2px 4px rgba(0,0,0,0.1)',
+      flex: 1,
     },
     searchContainer: {
       display: 'flex',
@@ -332,6 +333,8 @@ const styles = {
     },
   },
 };
+    
+
   return (
     <div style={styles.container}>
       {staff && (
