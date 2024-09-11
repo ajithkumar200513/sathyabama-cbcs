@@ -220,6 +220,7 @@ const styles = {
       cursor: 'pointer',
     },
  
+ 
   '@media (max-width: 768px)': {
     container: {
       flexDirection: 'column',
@@ -232,6 +233,8 @@ const styles = {
       display: 'flex',
       flexDirection: 'column',
       alignItems: 'center',
+      position: 'relative',
+      zIndex: 1000,
     },
     staffDetails: {
       margin: '0',
@@ -256,7 +259,6 @@ const styles = {
       textDecoration: 'none',
       cursor: 'pointer',
       fontSize: '14px',
-      margin: '0 5px',
     },
     activeNavButton: {
       backgroundColor: '#d32f2f',
