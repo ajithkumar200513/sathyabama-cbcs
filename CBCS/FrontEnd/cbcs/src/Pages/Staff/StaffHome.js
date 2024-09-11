@@ -99,8 +99,8 @@ const styles = {
     container: {
       display: 'flex',
       minHeight: '100vh',
-      backgroundColor: uploadedImage ? url(${uploadedImage}) : '#f0f0f0',
-      backgroundImage: url(${defaultBackgroundImage}),
+      backgroundColor: uploadedImage ? url($,{uploadedImage}) : '#f0f0f0',
+      backgroundImage: url($,{defaultBackgroundImage}),
       backgroundSize: 'cover',
       backgroundPosition: 'center',
       backgroundRepeat: 'no-repeat',
