@@ -209,18 +209,30 @@ const StaffHome = () => {
       color: '#fff',
       cursor: 'pointer',
     },
-    '@media (min-width: 769px)': {
+   '@media (max-width: 768px)': {
       container: {
-        flexDirection: 'row', // For desktop, layout will stay side-by-side
+        flexDirection: 'column',
       },
       sideNavbar: {
-        flexDirection: 'column', // Vertical layout for desktop
-        alignItems: 'center',
+        position: 'fixed',
+        top: 0,
+        width: '100%',
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        padding: '10px',
+        zIndex: 10,
+      },
+      tableContainer: {
+        marginTop: '100px', // Leave space for the navbar
+        padding: '10px',
       },
       navButton: {
-        width: '100%',
-        margin: '10px 0',
-        fontSize: '16px',
+        margin: '0 10px',
+        padding: '8px 10px',
+        fontSize: '14px',
+      },
+      navLinks: {
+        flexDirection: 'row',
       },
     },
   };
