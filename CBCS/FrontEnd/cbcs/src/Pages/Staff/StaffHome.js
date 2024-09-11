@@ -119,6 +119,7 @@ const styles = {
     staffDetails: {
       textAlign: 'center',
       marginBottom: '20px',
+      textdecoration: 'underline',
     },
     info: {
       margin: '10px 0',
