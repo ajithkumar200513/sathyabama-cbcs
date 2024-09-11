@@ -219,29 +219,55 @@ const styles = {
       color: '#fff',
       cursor: 'pointer',
     },
-    '@media (max-width: 768px)': {
-      container: {
-        flexDirection: 'column',
-      },
-      sideNavbar: {
-        flex: '0 0 auto',
-        width: '100%',
-        flexDirection: 'row',
-        justifyContent: 'space-between',
-        padding: '10px',
-      },
-      navLinks: {
-        flexDirection: 'row',
-      },
-      navButton: {
-        margin: '0 10px',
-      },
-      tableContainer: {
-        margin: '10px',
-        padding: '10px',
-      },
+   
+  '@media (max-width: 768px)': {
+    container: {
+      flexDirection: 'column',
     },
-  };
+    sideNavbar: {
+      width: '100%',
+      padding: '10px',
+      flexDirection: 'row',
+      justifyContent: 'space-around',
+    },
+    staffDetails: {
+      fontSize: '20px', // Reduce font size on mobile
+      paddingBottom: '5px',
+    },
+    navButton: {
+      padding: '5px 10px',
+      margin: '5px 0',
+      fontSize: '14px', // Smaller text for mobile buttons
+    },
+    tableContainer: {
+      padding: '10px',
+      margin: '10px',
+    },
+    searchContainer: {
+      flexDirection: 'column',
+      alignItems: 'flex-start',
+    },
+    searchInput: {
+      marginBottom: '10px', // Stack search bar and button vertically
+      width: '100%',
+    },
+    searchButton: {
+      width: '100%',
+    },
+    table: {
+      fontSize: '14px', // Smaller font size for table on mobile
+    },
+    th: {
+      padding: '8px',
+    },
+    td: {
+      padding: '8px',
+    },
+    paginationButton: {
+      padding: '8px 15px',
+    },
+  },
+};
 
 
 
