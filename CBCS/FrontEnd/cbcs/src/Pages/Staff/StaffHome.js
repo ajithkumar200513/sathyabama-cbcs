@@ -221,8 +221,10 @@ const styles = {
     },
  
  
+ 
   '@media (max-width: 768px)': {
     container: {
+      display: 'flex',
       flexDirection: 'column',
       padding: '0',
     },
@@ -231,23 +233,23 @@ const styles = {
       backgroundColor: '#9e1c3f',
       padding: '10px',
       display: 'flex',
-      flexDirection: 'column',
+      flexDirection: 'row',
+      justifyContent: 'space-around',
       alignItems: 'center',
       position: 'relative',
       zIndex: 1000,
     },
     staffDetails: {
-      margin: '0',
-      fontSize: '20px',
-      padding: '10px 0',
-      borderBottom: '2px solid #fff',
+      fontSize: '18px',
+      padding: '5px 0',
+      color: '#fff',
+      borderBottom: 'none',
     },
     navLinks: {
       display: 'flex',
       flexDirection: 'row',
+      justifyContent: 'space-between',
       width: '100%',
-      justifyContent: 'space-around',
-      marginBottom: '10px',
     },
     navButton: {
       padding: '10px 15px',
@@ -259,6 +261,8 @@ const styles = {
       textDecoration: 'none',
       cursor: 'pointer',
       fontSize: '14px',
+      flexGrow: 1,
+      margin: '0 5px',
     },
     activeNavButton: {
       backgroundColor: '#d32f2f',
@@ -280,7 +284,6 @@ const styles = {
       backgroundColor: 'rgba(255, 255, 255, 0.8)',
       borderRadius: '8px',
       overflowX: 'auto',
-      flex: 1,
     },
     searchContainer: {
       display: 'flex',
