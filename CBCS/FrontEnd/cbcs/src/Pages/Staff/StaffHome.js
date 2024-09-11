@@ -154,7 +154,7 @@ const styles = {
       borderRadius: '4px',
       cursor: 'pointer',
       textAlign: 'center',
-      width: '90%',
+      width: '92%',
     },
     tableContainer: {
       flex: 1,
