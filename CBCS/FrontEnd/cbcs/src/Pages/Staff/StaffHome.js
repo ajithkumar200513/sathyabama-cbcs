@@ -219,34 +219,58 @@ const styles = {
       color: '#fff',
       cursor: 'pointer',
     },
-    '@media (max-width: 768px)': {
-      container: {
-        flexDirection: 'column',
-      },
-      sideNavbar: {
-        position: 'fixed',
-        top: 0,
-        width: '100%',
-        flexDirection: 'row',
-        justifyContent: 'space-between',
-        padding: '10px',
-        zIndex: 10,
-      },
-      tableContainer: {
-        marginTop: '100px', // Leave space for the navbar
-        padding: '10px',
-      },
-      navButton: {
-        margin: '0 10px',
-        padding: '8px 10px',
-        fontSize: '14px',
-      },
-      navLinks: {
-        flexDirection: 'row',
-      },
+  '@media (max-width: 768px)': {
+    container: {
+      flexDirection: 'column',
     },
-  };
-
+    sideNavbar: {
+      flexDirection: 'row',
+      width: '100%',
+      justifyContent: 'space-around',
+      padding: '10px',
+      backgroundColor: '#9e1c3f',
+      position: 'relative',
+    },
+    navLinks: {
+      display: 'flex',
+      flexDirection: 'row',
+      justifyContent: 'space-around',
+      width: '100%',
+    },
+    navButton: {
+      margin: '5px 0',
+      flex: 1,
+      textAlign: 'center',
+      padding: '10px',
+      fontSize: '14px',
+    },
+    tableContainer: {
+      marginTop: '20px', // Space below navbar
+      padding: '10px',
+      backgroundColor: 'rgba(255, 255, 255, 0.9)',
+      borderRadius: '8px',
+      width: '100%',
+    },
+    table: {
+      width: '100%',
+    },
+    searchContainer: {
+      flexDirection: 'column',
+      alignItems: 'center',
+    },
+    searchInput: {
+      width: '100%',
+      marginBottom: '10px',
+    },
+    pagination: {
+      justifyContent: 'center',
+    },
+    paginationButton: {
+      padding: '8px 16px',
+      margin: '0 3px',
+    },
+  },
+};
 
   return (
     <div style={styles.container}>
