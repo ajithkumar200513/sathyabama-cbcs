@@ -117,9 +117,11 @@ const styles = {
       alignItems: 'center',
     },
     staffDetails: {
-      textAlign: 'center',
-      marginBottom: '20px',
-      textdecoration: 'underline',
+     textAlign: 'center',
+      margin: '0 0 20px 0',
+      fontSize: '24px',
+      borderBottom: '2px solid #fff',
+      paddingBottom: '10px',
     },
     info: {
       margin: '10px 0',
