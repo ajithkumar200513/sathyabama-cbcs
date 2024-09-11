@@ -245,8 +245,7 @@ const styles = {
         <div style={styles.sideNavbar}>
           <div style={styles.staffDetails}>
            
-            <p style={styles.info}>{staff.Name}</p>
-            <p style={styles.info}>{staff.Email}</p>
+            
           </div>
           <div style={styles.navLinks}>
             <NavLink to="/staf/Home/Attendence" style={styles.navButton} activeStyle={styles.activeNavButton}>Give Attendence</NavLink>
