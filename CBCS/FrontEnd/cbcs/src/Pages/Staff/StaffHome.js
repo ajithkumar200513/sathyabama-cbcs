@@ -96,146 +96,150 @@ useEffect(() => {
   const paginate = (pageNumber) => setCurrentPage(pageNumber);
 
 const styles = {
-  container: {
-    display: 'flex',
-    minHeight: '100vh',
-    backgroundColor: uploadedImage ? `url(${uploadedImage})` : '#f0f0f0',
-    backgroundImage: `url(${defaultBackgroundImage})`,
-    backgroundSize: 'cover',
-    backgroundPosition: 'center',
-    backgroundRepeat: 'no-repeat',
-    fontFamily: 'Arial, sans-serif',
-    flexDirection: 'row', // Row layout for desktop
-    '@media (max-width: 768px)': {
-      flexDirection: 'column', // Stack items on mobile
+    container: {
+      display: 'flex',
+      minHeight: '100vh',
+      backgroundColor: uploadedImage ? url(${uploadedImage}) : '#f0f0f0',
+      backgroundImage: url(${defaultBackgroundImage}),
+      backgroundSize: 'cover',
+      backgroundPosition: 'center',
+      backgroundRepeat: 'no-repeat',
+      fontFamily: 'Arial, sans-serif',
     },
-  },
-  sideNavbar: {
-    flex: '0 0 250px',
-    padding: '20px',
-    backgroundColor: '#9e1c3f',
-    color: '#fff',
-    borderRight: '1px solid #ddd',
-    display: 'flex',
-    flexDirection: 'column',
-    alignItems: 'center',
-    '@media (max-width: 768px)': {
-      flex: '0 0 100%', // Full width on mobile
-      padding: '10px',
-      flexDirection: 'row',
-      justifyContent: 'space-between',
+    sideNavbar: {
+      flex: '0 0 250px',
+      padding: '20px',
+      backgroundColor: '#9e1c3f', // COE theme color from HodNav
+      color: '#fff',
+      borderRight: '1px solid #ddd',
+      display: 'flex',
+      flexDirection: 'column',
+      alignItems: 'center',
     },
-  },
-  staffDetails: {
-    textAlign: 'center',
-    marginBottom: '20px',
-    fontSize: '24px',
-    borderBottom: '2px solid #fff',
-    paddingBottom: '10px',
-  },
-  navLinks: {
-    display: 'flex',
-    flexDirection: 'column',
-    alignItems: 'center',
-    '@media (max-width: 768px)': {
-      flexDirection: 'row', // Row layout on mobile
-      justifyContent: 'space-around',
+    staffDetails: {
+     textAlign: 'center',
+      margin: '0 0 20px 0',
+      fontSize: '24px',
+      borderBottom: '2px solid #fff',
+      paddingBottom: '10px',
+    },
+    info: {
+      margin: '10px 0',
+      fontWeight: 'bold',
+    },
+    navLinks: {
+      display: 'flex',
+      flexDirection: 'column',
+      alignItems: 'center',
+    },
+    navButton: {
       width: '100%',
+      padding: '10px 20px',
+      margin: '10px 0',
+      backgroundColor: '#c2185b', // Lighter shade for buttons from HodNav
+      color: '#fff',
+      border: 'none',
+      borderRadius: '4px',
+      textAlign: 'center',
+      textDecoration: 'none',
+      cursor: 'pointer',
+      fontSize: '16px',
     },
-  },
-  navButton: {
-    width: '100%',
-    padding: '10px 20px',
-    margin: '10px 0',
-    backgroundColor: '#c2185b',
-    color: '#fff',
-    border: 'none',
-    borderRadius: '4px',
-    textAlign: 'center',
-    textDecoration: 'none',
-    cursor: 'pointer',
-    fontSize: '16px',
-    '@media (max-width: 768px)': {
-      width: 'auto', // Fit content on mobile
-      padding: '8px',
-      margin: '5px 10px',
+    activeNavButton: {
+      backgroundColor: '#d32f2f', // Hover effect color from HodNav
     },
-  },
-  tableContainer: {
-    flex: 1,
-    padding: '20px',
-    overflowX: 'auto',
-    backgroundColor: 'rgba(255, 255, 255, 0.8)',
-    margin: '20px',
-    borderRadius: '8px',
-    '@media (max-width: 768px)': {
+    logoutButton: {
+      marginTop: '20px',
+      padding: '10px 20px',
+      backgroundColor: '#c2185b', // Match button color with HodNav
+      color: '#fff',
+      border: 'none',
+      borderRadius: '4px',
+      cursor: 'pointer',
+      textAlign: 'center',
+      width: '92%',
+    },
+    tableContainer: {
+      flex: 1,
+      padding: '20px',
+      overflowX: 'auto',
+      backgroundColor: 'rgba(255, 255, 255, 0.8)',
+      margin: '20px',
+      borderRadius: '8px',
+    },
+    searchContainer: {
+      display: 'flex',
+      justifyContent: 'center',
+      marginBottom: '20px',
+    },
+    searchInput: {
       padding: '10px',
-      margin: '10px',
+      fontSize: '16px',
+      borderRadius: '4px',
+      border: '1px solid #ddd',
+      marginRight: '10px',
+      flex: '1',
     },
-  },
-  searchContainer: {
-    display: 'flex',
-    justifyContent: 'center',
-    marginBottom: '20px',
+    searchButton: {
+      padding: '10px 20px',
+      backgroundColor: '#c2185b', // Match button color with HodNav
+      color: '#fff',
+      border: 'none',
+      borderRadius: '4px',
+      cursor: 'pointer',
+    },
+    table: {
+      width: '100%',
+      borderCollapse: 'collapse',
+      marginBottom: '20px',
+    },
+    th: {
+      padding: '10px',
+      border: '1px solid #ddd',
+      backgroundColor: '#f2f2f2',
+      textAlign: 'left',
+    },
+    td: {
+      padding: '10px',
+      border: '1px solid #ddd',
+      textAlign: 'left',
+    },
+    pagination: {
+      display: 'flex',
+      justifyContent: 'center',
+      marginTop: '20px',
+    },
+    paginationButton: {
+      padding: '10px 20px',
+      margin: '0 5px',
+      border: 'none',
+      backgroundColor: '#c2185b', // Match button color with HodNav
+      color: '#fff',
+      cursor: 'pointer',
+    },
     '@media (max-width: 768px)': {
-      flexDirection: 'column', // Stack search on mobile
+      container: {
+        flexDirection: 'column',
+      },
+      sideNavbar: {
+        flex: '0 0 auto',
+        width: '100%',
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        padding: '10px',
+      },
+      navLinks: {
+        flexDirection: 'row',
+      },
+      navButton: {
+        margin: '0 10px',
+      },
+      tableContainer: {
+        margin: '10px',
+        padding: '10px',
+      },
     },
-  },
-  searchInput: {
-    padding: '10px',
-    fontSize: '16px',
-    borderRadius: '4px',
-    border: '1px solid #ddd',
-    marginRight: '10px',
-    flex: '1',
-    '@media (max-width: 768px)': {
-      marginBottom: '10px',
-    },
-  },
-  searchButton: {
-    padding: '10px 20px',
-    backgroundColor: '#c2185b',
-    color: '#fff',
-    border: 'none',
-    borderRadius: '4px',
-    cursor: 'pointer',
-  },
-  table: {
-    width: '100%',
-    borderCollapse: 'collapse',
-    marginBottom: '20px',
-    '@media (max-width: 768px)': {
-      fontSize: '12px', // Smaller font on mobile
-    },
-  },
-  th: {
-    padding: '10px',
-    border: '1px solid #ddd',
-    backgroundColor: '#f2f2f2',
-    textAlign: 'left',
-  },
-  td: {
-    padding: '10px',
-    border: '1px solid #ddd',
-    textAlign: 'left',
-  },
-  pagination: {
-    display: 'flex',
-    justifyContent: 'center',
-    marginTop: '20px',
-  },
-  paginationButton: {
-    padding: '10px 20px',
-    margin: '0 5px',
-    border: 'none',
-    backgroundColor: '#c2185b',
-    color: '#fff',
-    cursor: 'pointer',
-    '@media (max-width: 768px)': {
-      padding: '8px', // Smaller buttons on mobile
-    },
-  },
-};
+  };
 
 
 
