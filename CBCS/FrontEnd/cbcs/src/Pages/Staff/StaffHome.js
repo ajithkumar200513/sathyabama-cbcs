@@ -14,28 +14,27 @@ const StaffHome = () => {
   const [uploadedImage, setUploadedImage] = useState(null);
   const [searchQuery, setSearchQuery] = useState('');
 
-useEffect(() => {
-  const fetchData = async () => {
-    try {
-      const response = await fetch(`https://sathyabama-cbcs.onrender.com/cbcs/staf/RegStudent/${staff.id}`, {
-        headers: { Authorization: `Bearer ${staff.token}` }
-      });
-      const json = await response.json();
-      if (response.ok) {
-        setData(json);
-      } else {
-        console.error('Error fetching student data:', json);
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await fetch(`https://sathyabama-cbcs.onrender.com/cbcs/staf/RegStudent/${staff.id}`, {
+          headers: { Authorization: `Bearer ${staff.token}` }
+        });
+        const json = await response.json();
+        if (response.ok) {
+          setData(json);
+        } else {
+          console.error('Error fetching student data:', json);
+        }
+      } catch (error) {
+        console.error('Fetch error:', error);
       }
-    } catch (error) {
-      console.error('Fetch error:', error);
+    };
+
+    if (staff) {
+      fetchData();
     }
-  };
-
-  if (staff) {
-    fetchData();
-  }
-}, [staff]);
-
+  }, [staff]);
 
   useEffect(() => {
     const handleOrientationChange = () => {
@@ -95,49 +94,42 @@ useEffect(() => {
 
   const paginate = (pageNumber) => setCurrentPage(pageNumber);
 
-const styles = {
+  const styles = {
     container: {
       display: 'flex',
+      flexDirection: 'column', // Adjust for mobile view (top-down)
       minHeight: '100vh',
       backgroundColor: uploadedImage ? `url(${uploadedImage})` : '#f0f0f0',
-      
       backgroundImage: `url(${defaultBackgroundImage})`,
-
       backgroundSize: 'cover',
       backgroundPosition: 'center',
       backgroundRepeat: 'no-repeat',
       fontFamily: 'Arial, sans-serif',
     },
     sideNavbar: {
-      flex: '0 0 250px',
-      padding: '20px',
+      flex: '0 0 auto',
+      padding: '10px',
       backgroundColor: '#9e1c3f', // COE theme color from HodNav
       color: '#fff',
-      borderRight: '1px solid #ddd',
       display: 'flex',
-      flexDirection: 'column',
+      flexDirection: 'row', // For mobile, nav will be on top
+      justifyContent: 'space-around',
       alignItems: 'center',
+      borderBottom: '2px solid #ddd',
     },
     staffDetails: {
-     textAlign: 'center',
-      margin: '0 0 20px 0',
-      fontSize: '24px',
+      textAlign: 'center',
+      fontSize: '20px',
       borderBottom: '2px solid #fff',
       paddingBottom: '10px',
     },
-    info: {
-      margin: '10px 0',
-      fontWeight: 'bold',
-    },
     navLinks: {
       display: 'flex',
-      flexDirection: 'column',
-      alignItems: 'center',
+      flexDirection: 'row',
     },
     navButton: {
-      width: '100%',
-      padding: '10px 20px',
-      margin: '10px 0',
+      padding: '10px',
+      margin: '5px',
       backgroundColor: '#c2185b', // Lighter shade for buttons from HodNav
       color: '#fff',
       border: 'none',
@@ -145,13 +137,11 @@ const styles = {
       textAlign: 'center',
       textDecoration: 'none',
       cursor: 'pointer',
-      fontSize: '16px',
-    },
-    activeNavButton: {
-      backgroundColor: '#d32f2f', // Hover effect color from HodNav
+      fontSize: '14px',
+      flex: '1', // Make the buttons take equal space in mobile view
     },
     logoutButton: {
-      marginTop: '20px',
+      marginTop: '10px',
       padding: '10px 20px',
       backgroundColor: '#c2185b', // Match button color with HodNav
       color: '#fff',
@@ -159,20 +149,20 @@ const styles = {
       borderRadius: '4px',
       cursor: 'pointer',
       textAlign: 'center',
-      width: '92%',
+      flex: '1',
     },
     tableContainer: {
       flex: 1,
-      padding: '20px',
+      padding: '10px',
       overflowX: 'auto',
       backgroundColor: 'rgba(255, 255, 255, 0.8)',
-      margin: '20px',
+      margin: '10px 0',
       borderRadius: '8px',
     },
     searchContainer: {
       display: 'flex',
       justifyContent: 'center',
-      marginBottom: '20px',
+      marginBottom: '10px',
     },
     searchInput: {
       padding: '10px',
@@ -193,7 +183,7 @@ const styles = {
     table: {
       width: '100%',
       borderCollapse: 'collapse',
-      marginBottom: '20px',
+      marginBottom: '10px',
     },
     th: {
       padding: '10px',
@@ -209,82 +199,53 @@ const styles = {
     pagination: {
       display: 'flex',
       justifyContent: 'center',
-      marginTop: '20px',
+      marginTop: '10px',
     },
     paginationButton: {
-      padding: '10px 20px',
+      padding: '10px',
       margin: '0 5px',
       border: 'none',
       backgroundColor: '#c2185b', // Match button color with HodNav
       color: '#fff',
       cursor: 'pointer',
     },
-   
-  '@media (max-width: 768px)': {
-    container: {
-      flexDirection: 'column',
+    '@media (min-width: 769px)': {
+      container: {
+        flexDirection: 'row', // For desktop, layout will stay side-by-side
+      },
+      sideNavbar: {
+        flexDirection: 'column', // Vertical layout for desktop
+        alignItems: 'center',
+      },
+      navButton: {
+        width: '100%',
+        margin: '10px 0',
+        fontSize: '16px',
+      },
     },
-    sideNavbar: {
-      width: '100%',
-      padding: '10px',
-      flexDirection: 'row',
-      justifyContent: 'space-around',
-    },
-    staffDetails: {
-      fontSize: '20px', // Reduce font size on mobile
-      paddingBottom: '5px',
-    },
-    navButton: {
-      padding: '5px 10px',
-      margin: '5px 0',
-      fontSize: '14px', // Smaller text for mobile buttons
-    },
-    tableContainer: {
-      padding: '10px',
-      margin: '10px',
-    },
-    searchContainer: {
-      flexDirection: 'column',
-      alignItems: 'flex-start',
-    },
-    searchInput: {
-      marginBottom: '10px', // Stack search bar and button vertically
-      width: '100%',
-    },
-    searchButton: {
-      width: '100%',
-    },
-    table: {
-      fontSize: '14px', // Smaller font size for table on mobile
-    },
-    th: {
-      padding: '8px',
-    },
-    td: {
-      padding: '8px',
-    },
-    paginationButton: {
-      padding: '8px 15px',
-    },
-  },
-};
-
-
+  };
 
   return (
     <div style={styles.container}>
       {staff && (
         <div style={styles.sideNavbar}>
           <div style={styles.staffDetails}>
-           <div><h3>Dashboard</h3></div>
-            
+            <h3>Dashboard</h3>
           </div>
           <div style={styles.navLinks}>
-            <NavLink to="/staf/Home/Attendence" style={styles.navButton} activeStyle={styles.activeNavButton}>Give Attendence</NavLink>
-            <NavLink to="/staf/Home/Marks" style={styles.navButton} activeStyle={styles.activeNavButton}>Give Marks</NavLink>
-            <NavLink to="/staf/Home/Attendence/Info" style={styles.navButton} activeStyle={styles.activeNavButton}>View Attendence Info</NavLink>
+            <NavLink to="/staf/Home/Attendence" style={styles.navButton}>
+              Give Attendance
+            </NavLink>
+            <NavLink to="/staf/Home/Marks" style={styles.navButton}>
+              Give Marks
+            </NavLink>
+            <NavLink to="/staf/Home/Attendence/Info" style={styles.navButton}>
+              View Attendance Info
+            </NavLink>
+            <button onClick={handleLogout} style={styles.logoutButton}>
+              LOG OUT
+            </button>
           </div>
-          <button onClick={handleLogout} style={styles.logoutButton}>LOG OUT</button>
         </div>
       )}
       {data.length > 0 && (
@@ -297,19 +258,16 @@ const styles = {
               onChange={handleSearchChange}
               style={styles.searchInput}
             />
-            <button onClick={() => setCurrentPage(1)} style={styles.searchButton}>Search</button>
+            <button onClick={() => setCurrentPage(1)} style={styles.searchButton}>
+              Search
+            </button>
           </div>
           <table style={styles.table}>
             <thead>
               <tr>
                 <th style={styles.th}>Name</th>
                 <th style={styles.th}>RegNo</th>
-                <th style={styles.th}>Email</th>
-                <th style={styles.th}>DEPT</th>
                 <th style={styles.th}>Course</th>
-                <th style={styles.th}>CAE-1</th>
-                <th style={styles.th}>CAE-2</th>
-                <th style={styles.th}>SEM</th>
               </tr>
             </thead>
             <tbody>
@@ -317,20 +275,24 @@ const styles = {
                 <tr key={index}>
                   <td style={styles.td}>{student.Name}</td>
                   <td style={styles.td}>{student.RegNo}</td>
-                  <td style={styles.td}>{student.Email}</td>
-                  <td style={styles.td}>{student.Dept}</td>
                   <td style={styles.td}>{student.Course}</td>
-                  <td style={styles.td}>{student.CAE1? student.CAE1 : 'N/A'}</td>
-                  <td style={styles.td}>{student.CAE2? student.CAE2 : 'N/A'}</td>
-                  <td style={styles.td}>{student.SEM ? student.SEM : 'N/A'}</td>
                 </tr>
               ))}
             </tbody>
           </table>
           <div style={styles.pagination}>
-            {Array.from({ length: Math.ceil(filteredData.length / studentsPerPage) }, (_, index) => (
-              <button key={index + 1} onClick={() => paginate(index + 1)} style={styles.paginationButton}>{index + 1}</button>
-            ))}
+            {Array.from(
+              { length: Math.ceil(filteredData.length / studentsPerPage) },
+              (_, index) => (
+                <button
+                  key={index}
+                  onClick={() => paginate(index + 1)}
+                  style={styles.paginationButton}
+                >
+                  {index + 1}
+                </button>
+              )
+            )}
           </div>
         </div>
       )}
