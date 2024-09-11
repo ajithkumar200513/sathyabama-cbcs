@@ -244,7 +244,7 @@ const styles = {
       {staff && (
         <div style={styles.sideNavbar}>
           <div style={styles.staffDetails}>
-           <div>Dashboard</div>
+           <div><h3>Dashboard</h3></div>
             
           </div>
           <div style={styles.navLinks}>
