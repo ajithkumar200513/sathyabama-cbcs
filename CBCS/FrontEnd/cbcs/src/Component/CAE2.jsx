@@ -192,78 +192,69 @@ const CAE2 = () => {
   return (
     <div style={styles.container}>
       <h2 style={styles.heading}>CAE-2</h2>
-      {staff.CAE2 ? <h1>Marks Already Given</h1> : (
-        <form style={styles.form} onSubmit={handleSubmit}>
-          <div style={styles.searchContainer}>
-            <input
-              type="text"
-              placeholder="Search by Name or RegNo"
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-              style={styles.input}
-            />
-            <button
-              type="button"
-              style={styles.button}
-              onMouseEnter={() => setButtonHover(true)}
-              onMouseLeave={() => setButtonHover(false)}
-            >
-              Search
-            </button>
-          </div>
-          <table style={styles.table}>
-            <thead>
-              <tr>
-                <th style={styles.th}>Name</th>
-                <th style={styles.th}>REG-No</th>
-                <th style={styles.th}>Marks</th>
+      <form style={styles.form} onSubmit={handleSubmit}>
+        <div style={styles.searchContainer}>
+          <input
+            type="text"
+            placeholder="Search by Name or RegNo"
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+            style={styles.input}
+          />
+        </div>
+        <table style={styles.table}>
+          <thead>
+            <tr>
+              <th style={styles.th}>Name</th>
+              <th style={styles.th}>REG-No</th>
+              <th style={styles.th}>Marks</th>
+            </tr>
+          </thead>
+          <tbody>
+            {currentItems.map((student) => (
+              <tr key={student._id}>
+                <td style={styles.td}>{student.Name}</td>
+                <td style={styles.td}>{student.RegNo}</td>
+                <td style={styles.td}>
+                  <input
+                    type='text'
+                    onChange={(e) => MarkUpdate(student._id, e.target.value)}
+                    style={styles.input}
+                    value={Marks[student._id] || ''}
+                  />
+                </td>
               </tr>
-            </thead>
-            <tbody>
-              {currentItems.map((student) => (
-                <tr key={student._id}>
-                  <td style={styles.td}>{student.Name}</td>
-                  <td style={styles.td}>{student.RegNo}</td>
-                  <td style={styles.td}>
-                    <input
-                      type='text'
-                      onChange={(e) => MarkUpdate(student._id, e.target.value)}
-                      style={styles.input}
-                    />
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-          <div style={styles.pagination}>
-            <button
-              type="button"
-              style={styles.paginationButton}
-              onClick={() => setCurrentPage(prev => Math.max(prev - 1, 1))}
-              disabled={currentPage === 1}
-            >
-              Previous
-            </button>
-            <span>{`Page ${currentPage} of ${totalPages}`}</span>
-            <button
-              type="button"
-              style={styles.paginationButton}
-              onClick={() => setCurrentPage(prev => Math.min(prev + 1, totalPages))}
-              disabled={currentPage === totalPages}
-            >
-              Next
-            </button>
-          </div>
+            ))}
+          </tbody>
+        </table>
+        <div style={styles.pagination}>
           <button
-            type="submit"
-            style={{ ...styles.button, ...(buttonHover ? styles.buttonHover : {}) }}
-            onMouseEnter={() => setButtonHover(true)}
-            onMouseLeave={() => setButtonHover(false)}
+            type="button"
+            style={styles.paginationButton}
+            onClick={() => setCurrentPage(prev => Math.max(prev - 1, 1))}
+            disabled={currentPage === 1}
           >
-            SUBMIT
+            Previous
           </button>
-        </form>
-      )}
+          <span>{`Page ${currentPage} of ${totalPages}`}</span>
+          <button
+            type="button"
+            style={styles.paginationButton}
+            onClick={() => setCurrentPage(prev => Math.min(prev + 1, totalPages))}
+            disabled={currentPage === totalPages}
+          >
+            Next
+          </button>
+        </div>
+        <button
+          type="submit"
+          style={{ ...styles.button, ...(buttonHover ? styles.buttonHover : {}) }}
+          onMouseEnter={() => setButtonHover(true)}
+          onMouseLeave={() => setButtonHover(false)}
+        >
+          SUBMIT
+        </button>
+      </form>
     </div>
   );
 };
