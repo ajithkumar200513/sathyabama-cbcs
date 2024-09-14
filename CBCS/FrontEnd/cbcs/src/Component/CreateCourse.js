@@ -38,6 +38,7 @@ const CreateCourse = () => {
       setError(null);
       console.log('NEW COURSE', json);
       dispatch({ type: 'CREATE_COURSE', payload: json });
+      window.alert('Course added successfully!'); // Alert on successful course addition
     }
   };
 
