@@ -194,7 +194,7 @@ const SEM = () => {
   return (
     <div style={styles.container}>
       <h2 style={styles.heading}>SEM</h2>
-      {staff.SEM ? <h1>Marks Already Given</h1> : (
+   
         <form style={styles.form} onSubmit={handleSubmit}>
           <div style={styles.searchContainer}>
             <input
