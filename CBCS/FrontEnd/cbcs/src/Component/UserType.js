@@ -1,13 +1,16 @@
 import { Link } from 'react-router-dom';
-import React from 'react';
+import React, { useEffect } from 'react';
 import '../css/UserType12.css';
 import back from '../css/back.jpg'; // Correct import of the image (if needed)
 import Chatbot from './Chatbot'; // Import the Chatbot component
 
 const UserType = () => {
+  useEffect(() => {
+    alert("Please note that there might be a 50-second wait during your first sign-in on Render Free Hosting");
+  }, []);
+
   return (
     <div className='usertype'>
-      
       <div className='banner'>
         <img src={back} alt="Banner" />
       </div>
@@ -15,7 +18,7 @@ const UserType = () => {
         <h1 className='heading'>SELECT ROLE</h1>
         <nav>
           <Link to='/COE' className='btn btn-primary btn-block'>COE</Link>
-          <Link to ='/DEAN'  className='btn btn-primary btn-block'>DEAN</Link>
+          <Link to='/DEAN' className='btn btn-primary btn-block'>DEAN</Link>
           <Link to='/hod' className='btn btn-primary btn-block'>HOD</Link>
           <Link to='/staf' className='btn btn-primary btn-block'>STAFF</Link>
           <Link to='/student' className='btn btn-primary btn-block'>STUDENT</Link>
