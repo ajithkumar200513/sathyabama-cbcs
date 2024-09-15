@@ -13,29 +13,29 @@ const StaffHome = () => {
   const [studentsPerPage] = useState(10);
   const [uploadedImage, setUploadedImage] = useState(null);
   const [searchQuery, setSearchQuery] = useState('');
+  const [hoveredButton, setHoveredButton] = useState(null);
 
-useEffect(() => {
-  const fetchData = async () => {
-    try {
-      const response = await fetch(`https://sathyabama-cbcs.onrender.com/cbcs/staf/RegStudent/${staff.id}`, {
-        headers: { Authorization: `Bearer ${staff.token}` }
-      });
-      const json = await response.json();
-      if (response.ok) {
-        setData(json);
-      } else {
-        console.error('Error fetching student data:', json);
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await fetch(`https://sathyabama-cbcs.onrender.com/cbcs/staf/RegStudent/${staff.id}`, {
+          headers: { Authorization: `Bearer ${staff.token}` }
+        });
+        const json = await response.json();
+        if (response.ok) {
+          setData(json);
+        } else {
+          console.error('Error fetching student data:', json);
+        }
+      } catch (error) {
+        console.error('Fetch error:', error);
       }
-    } catch (error) {
-      console.error('Fetch error:', error);
+    };
+
+    if (staff) {
+      fetchData();
     }
-  };
-
-  if (staff) {
-    fetchData();
-  }
-}, [staff]);
-
+  }, [staff]);
 
   useEffect(() => {
     const handleOrientationChange = () => {
@@ -77,32 +77,28 @@ useEffect(() => {
     setSearchQuery(event.target.value);
   };
 
-  // Filter data based on the search query
   const filteredData = data.flatMap(course =>
     course.RegStudents.filter(student =>
       student.Name.toLowerCase().includes(searchQuery.toLowerCase()) ||
       student.RegNo.toLowerCase().includes(searchQuery.toLowerCase())
     ).map(student => ({
       ...student,
-      Course: course.CourseName // Add the course name to each student
+      Course: course.CourseName
     }))
   );
 
-  // Paginate the filtered data
   const indexOfLastStudent = currentPage * studentsPerPage;
   const indexOfFirstStudent = indexOfLastStudent - studentsPerPage;
   const currentStudents = filteredData.slice(indexOfFirstStudent, indexOfLastStudent);
 
   const paginate = (pageNumber) => setCurrentPage(pageNumber);
 
-const styles = {
+  const styles = {
     container: {
       display: 'flex',
       minHeight: '100vh',
       backgroundColor: uploadedImage ? `url(${uploadedImage})` : '#f0f0f0',
-      
       backgroundImage: `url(${defaultBackgroundImage})`,
-
       backgroundSize: 'cover',
       backgroundPosition: 'center',
       backgroundRepeat: 'no-repeat',
@@ -111,7 +107,7 @@ const styles = {
     sideNavbar: {
       flex: '0 0 250px',
       padding: '20px',
-      backgroundColor: '#9e1c3f', // COE theme color from HodNav
+      backgroundColor: '#9e1c3f',
       color: '#fff',
       borderRight: '1px solid #ddd',
       display: 'flex',
@@ -119,7 +115,7 @@ const styles = {
       alignItems: 'center',
     },
     staffDetails: {
-     textAlign: 'center',
+      textAlign: 'center',
       margin: '0 0 20px 0',
       fontSize: '24px',
       borderBottom: '2px solid #fff',
@@ -138,7 +134,7 @@ const styles = {
       width: '100%',
       padding: '10px 20px',
       margin: '10px 0',
-      backgroundColor: '#c2185b', // Lighter shade for buttons from HodNav
+      backgroundColor: hoveredButton === 'navButton1' ? '#d32f2f' : '#c2185b',
       color: '#fff',
       border: 'none',
       borderRadius: '4px',
@@ -148,12 +144,12 @@ const styles = {
       fontSize: '16px',
     },
     activeNavButton: {
-      backgroundColor: '#d32f2f', // Hover effect color from HodNav
+      backgroundColor: '#d32f2f',
     },
     logoutButton: {
       marginTop: '20px',
       padding: '10px 20px',
-      backgroundColor: '#c2185b', // Match button color with HodNav
+      backgroundColor: hoveredButton === 'logoutButton' ? '#d32f2f' : '#c2185b',
       color: '#fff',
       border: 'none',
       borderRadius: '4px',
@@ -184,7 +180,7 @@ const styles = {
     },
     searchButton: {
       padding: '10px 20px',
-      backgroundColor: '#c2185b', // Match button color with HodNav
+      backgroundColor: '#c2185b',
       color: '#fff',
       border: 'none',
       borderRadius: '4px',
@@ -215,145 +211,168 @@ const styles = {
       padding: '10px 20px',
       margin: '0 5px',
       border: 'none',
-      backgroundColor: '#c2185b', // Match button color with HodNav
-      color: '#fff',
-      cursor: 'pointer',
-    },
- 
- 
- 
-  '@media (max-width: 768px)': {
-    container: {
-      display: 'flex',
-      flexDirection: 'column',
-      padding: '0',
-    },
-    sideNavbar: {
-      width: '100%',
-      backgroundColor: '#9e1c3f',
-      padding: '10px',
-      display: 'flex',
-      flexDirection: 'row',
-      justifyContent: 'space-around',
-      alignItems: 'center',
-      position: 'relative',
-      zIndex: 1000,
-    },
-    staffDetails: {
-      fontSize: '18px',
-      padding: '5px 0',
-      color: '#fff',
-      borderBottom: 'none',
-    },
-    navLinks: {
-      display: 'flex',
-      flexDirection: 'row',
-      justifyContent: 'space-between',
-      width: '100%',
-    },
-    navButton: {
-      padding: '10px 15px',
-      backgroundColor: '#c2185b',
-      color: '#fff',
-      border: 'none',
-      borderRadius: '4px',
-      textAlign: 'center',
-      textDecoration: 'none',
-      cursor: 'pointer',
-      fontSize: '14px',
-      flexGrow: 1,
-      margin: '0 5px',
-    },
-    activeNavButton: {
-      backgroundColor: '#d32f2f',
-    },
-    logoutButton: {
-      padding: '10px 20px',
-      backgroundColor: '#c2185b',
-      color: '#fff',
-      border: 'none',
-      borderRadius: '4px',
-      cursor: 'pointer',
-      textAlign: 'center',
-      width: '100%',
-      marginTop: '10px',
-    },
-    tableContainer: {
-      margin: '10px',
-      padding: '10px',
-      backgroundColor: 'rgba(255, 255, 255, 0.8)',
-      borderRadius: '8px',
-      overflowX: 'auto',
-    },
-    searchContainer: {
-      display: 'flex',
-      flexDirection: 'column',
-      alignItems: 'center',
-      marginBottom: '10px',
-    },
-    searchInput: {
-      padding: '10px',
-      fontSize: '14px',
-      borderRadius: '4px',
-      border: '1px solid #ddd',
-      marginBottom: '10px',
-      width: '100%',
-    },
-    searchButton: {
-      padding: '10px',
-      backgroundColor: '#c2185b',
-      color: '#fff',
-      border: 'none',
-      borderRadius: '4px',
-      cursor: 'pointer',
-      width: '100%',
-    },
-    table: {
-      width: '100%',
-      borderCollapse: 'collapse',
-    },
-    th: {
-      padding: '10px',
-      border: '1px solid #ddd',
-      backgroundColor: '#f2f2f2',
-      textAlign: 'left',
-    },
-    td: {
-      padding: '10px',
-      border: '1px solid #ddd',
-      textAlign: 'left',
-    },
-    pagination: {
-      display: 'flex',
-      justifyContent: 'center',
-      marginTop: '10px',
-    },
-    paginationButton: {
-      padding: '10px',
-      margin: '0 5px',
-      border: 'none',
       backgroundColor: '#c2185b',
       color: '#fff',
       cursor: 'pointer',
     },
-  },
-};
-    
+    '@media (max-width: 768px)': {
+      container: {
+        display: 'flex',
+        flexDirection: 'column',
+        padding: '0',
+      },
+      sideNavbar: {
+        width: '100%',
+        backgroundColor: '#9e1c3f',
+        padding: '10px',
+        display: 'flex',
+        flexDirection: 'row',
+        justifyContent: 'space-around',
+        alignItems: 'center',
+        position: 'relative',
+        zIndex: 1000,
+      },
+      staffDetails: {
+        fontSize: '18px',
+        padding: '5px 0',
+        color: '#fff',
+        borderBottom: 'none',
+      },
+      navLinks: {
+        display: 'flex',
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        width: '100%',
+      },
+      navButton: {
+        padding: '10px 15px',
+        backgroundColor: hoveredButton === 'navButton1' ? '#d32f2f' : '#c2185b',
+        color: '#fff',
+        border: 'none',
+        borderRadius: '4px',
+        textAlign: 'center',
+        textDecoration: 'none',
+        cursor: 'pointer',
+        fontSize: '14px',
+        flexGrow: 1,
+        margin: '0 5px',
+      },
+      activeNavButton: {
+        backgroundColor: '#d32f2f',
+      },
+      logoutButton: {
+        padding: '10px 20px',
+        backgroundColor: hoveredButton === 'logoutButton' ? '#d32f2f' : '#c2185b',
+        color: '#fff',
+        border: 'none',
+        borderRadius: '4px',
+        cursor: 'pointer',
+        textAlign: 'center',
+        width: '100%',
+        marginTop: '10px',
+      },
+      tableContainer: {
+        margin: '10px',
+        padding: '10px',
+        backgroundColor: 'rgba(255, 255, 255, 0.8)',
+        borderRadius: '8px',
+        overflowX: 'auto',
+      },
+      searchContainer: {
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'center',
+        marginBottom: '10px',
+      },
+      searchInput: {
+        padding: '10px',
+        fontSize: '14px',
+        borderRadius: '4px',
+        border: '1px solid #ddd',
+        marginBottom: '10px',
+        width: '100%',
+      },
+      searchButton: {
+        padding: '10px',
+        backgroundColor: '#c2185b',
+        color: '#fff',
+        border: 'none',
+        borderRadius: '4px',
+        cursor: 'pointer',
+        width: '100%',
+      },
+      table: {
+        width: '100%',
+        borderCollapse: 'collapse',
+      },
+      th: {
+        padding: '10px',
+        border: '1px solid #ddd',
+        backgroundColor: '#f2f2f2',
+        textAlign: 'left',
+      },
+      td: {
+        padding: '10px',
+        border: '1px solid #ddd',
+        textAlign: 'left',
+      },
+      pagination: {
+        display: 'flex',
+        justifyContent: 'center',
+        marginTop: '10px',
+      },
+      paginationButton: {
+        padding: '10px',
+        margin: '0 5px',
+        border: 'none',
+        backgroundColor: '#c2185b',
+        color: '#fff',
+        cursor: 'pointer',
+      },
+    },
+  };
 
   return (
     <div style={styles.container}>
       {staff && (
         <div style={styles.sideNavbar}>
           <div style={styles.staffDetails}>
-           <div><h3>Dashboard</h3></div>
-            
+            <div><h3>Dashboard</h3></div>
           </div>
           <div style={styles.navLinks}>
-            <NavLink to="/staf/Home/Attendence" style={styles.navButton} activeStyle={styles.activeNavButton}>Give Attendence</NavLink>
-            <NavLink to="/staf/Home/Marks" style={styles.navButton} activeStyle={styles.activeNavButton}>Give Marks</NavLink>
-            <NavLink to="/staf/Home/Attendence/Info" style={styles.navButton} activeStyle={styles.activeNavButton}>View Attendence Info</NavLink>
+            <NavLink
+              to="/staf/Home/Attendence"
+              style={{ ...styles.navButton, backgroundColor: hoveredButton === 'navButton1' ? '#d32f2f' : '#c2185b' }}
+              onMouseEnter={() => setHoveredButton('navButton1')}
+              onMouseLeave={() => setHoveredButton(null)}
+            >
+              Give Attendence
+            </NavLink>
+            <NavLink
+              to="/staf/Home/Marks"
+              style={{ ...styles.navButton, backgroundColor: hoveredButton === 'navButton2' ? '#d32f2f' : '#c2185b' }}
+              onMouseEnter={() => setHoveredButton('navButton2')}
+              onMouseLeave={() => setHoveredButton(null)}
+            >
+              Give Marks
+            </NavLink>
+            <NavLink
+              to="/staf/Home/Attendence/Info"
+              style={{ ...styles.navButton, backgroundColor: hoveredButton === 'navButton3' ? '#d32f2f' : '#c2185b' }}
+              onMouseEnter={() => setHoveredButton('navButton3')}
+              onMouseLeave={() => setHoveredButton(null)}
+            >
+              View Attendence Info
+            </NavLink>
           </div>
-          <button onClick={handleLogout} style={styles.logoutButton}>LOG OUT</button>
+          <button
+            onClick={handleLogout}
+            style={{ ...styles.logoutButton, backgroundColor: hoveredButton === 'logoutButton' ? '#d32f2f' : '#c2185b' }}
+            onMouseEnter={() => setHoveredButton('logoutButton')}
+            onMouseLeave={() => setHoveredButton(null)}
+          >
+            LOG OUT
+          </button>
         </div>
       )}
       {data.length > 0 && (
@@ -389,8 +408,8 @@ const styles = {
                   <td style={styles.td}>{student.Email}</td>
                   <td style={styles.td}>{student.Dept}</td>
                   <td style={styles.td}>{student.Course}</td>
-                  <td style={styles.td}>{student.CAE1? student.CAE1 : 'N/A'}</td>
-                  <td style={styles.td}>{student.CAE2? student.CAE2 : 'N/A'}</td>
+                  <td style={styles.td}>{student.CAE1 ? student.CAE1 : 'N/A'}</td>
+                  <td style={styles.td}>{student.CAE2 ? student.CAE2 : 'N/A'}</td>
                   <td style={styles.td}>{student.SEM ? student.SEM : 'N/A'}</td>
                 </tr>
               ))}

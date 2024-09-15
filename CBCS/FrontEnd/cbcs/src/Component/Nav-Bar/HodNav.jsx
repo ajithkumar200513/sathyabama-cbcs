@@ -1,16 +1,25 @@
-import React from 'react';
+import React, { useState } from 'react';
 import HodTable from '../HodTable';
 import { Link } from 'react-router-dom';
 import backgroundImage from '../Nav-Bar/logo.png'; // Make sure the image path is correct
 
 const HodNav = ({ course, handelclick }) => {
+  const [hoveredIndex, setHoveredIndex] = useState(null);
+
+  const handleMouseEnter = (index) => {
+    setHoveredIndex(index);
+  };
+
+  const handleMouseLeave = () => {
+    setHoveredIndex(null);
+  };
+
   const styles = {
     bodyNav: {
       display: 'flex',
       flexDirection: 'column',
       alignItems: 'center',
       backgroundColor: '#f0f0f0',
-
       backgroundImage: `url(${backgroundImage})`,
       backgroundSize: 'cover',
       backgroundPosition: 'center',
@@ -112,10 +121,36 @@ const HodNav = ({ course, handelclick }) => {
         <div style={styles.sidebar}>
           <h2 style={styles.sidebarH2}>DASHBOARD</h2>
           <ul style={styles.sidebarUl}>
-            <li style={styles.sidebarLi}><Link to='/hod/student_info' style={styles.sidebarLink}>Student Info</Link></li>
-            <li style={styles.sidebarLi}><Link to='/hod/Create-course' style={styles.sidebarLink}>Create-Course</Link></li>
-            
-            <li style={styles.sidebarLi}><a onClick={handelclick} style={{ ...styles.sidebarLink, cursor: 'pointer' }}>Log-out</a></li>
+            <li
+              style={{
+                ...styles.sidebarLi,
+                ...(hoveredIndex === 0 ? styles.sidebarLiHover : {}),
+              }}
+              onMouseEnter={() => handleMouseEnter(0)}
+              onMouseLeave={handleMouseLeave}
+            >
+              <Link to='/hod/student_info' style={styles.sidebarLink}>Student Info</Link>
+            </li>
+            <li
+              style={{
+                ...styles.sidebarLi,
+                ...(hoveredIndex === 1 ? styles.sidebarLiHover : {}),
+              }}
+              onMouseEnter={() => handleMouseEnter(1)}
+              onMouseLeave={handleMouseLeave}
+            >
+              <Link to='/hod/Create-course' style={styles.sidebarLink}>Create-Course</Link>
+            </li>
+            <li
+              style={{
+                ...styles.sidebarLi,
+                ...(hoveredIndex === 2 ? styles.sidebarLiHover : {}),
+              }}
+              onMouseEnter={() => handleMouseEnter(2)}
+              onMouseLeave={handleMouseLeave}
+            >
+              <a onClick={handelclick} style={{ ...styles.sidebarLink, cursor: 'pointer' }}>Log-out</a>
+            </li>
           </ul>
         </div>
         <div style={styles.mainContent}>
